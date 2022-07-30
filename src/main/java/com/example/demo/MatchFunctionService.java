@@ -46,7 +46,7 @@ public class MatchFunctionService extends MatchFunctionGrpc.MatchFunctionImplBas
             @Override
             public void onNext(MakeMatchesRequest makeMatchesRequest) {
 
-                if(makeMatchesRequest.getTicket() != null){
+                if(makeMatchesRequest.hasTicket()){
 
                     Ticket newTicket = makeMatchesRequest.getTicket();
                     unmatchedTickets.add(newTicket);
