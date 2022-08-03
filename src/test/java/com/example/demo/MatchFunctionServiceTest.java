@@ -2,6 +2,7 @@ package com.example.demo;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.Metadata;
 import io.grpc.examples.matchfunctiongrpc.GetStatCodesRequest;
 import io.grpc.examples.matchfunctiongrpc.MakeMatchesRequest;
 import io.grpc.examples.matchfunctiongrpc.Match;
@@ -11,10 +12,18 @@ import io.grpc.examples.matchfunctiongrpc.StatCodesResponse;
 import io.grpc.examples.matchfunctiongrpc.Ticket;
 import io.grpc.examples.matchfunctiongrpc.ValidateTicketRequest;
 import io.grpc.examples.matchfunctiongrpc.ValidateTicketResponse;
+import io.grpc.stub.MetadataUtils;
 import io.grpc.stub.StreamObserver;
+import net.accelbyte.platform.security.OAuthToken;
+import net.accelbyte.platform.security.service.OAuthService;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lognet.springboot.grpc.context.LocalRunningGrpcPort;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,23 +32,40 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 
+@ActiveProfiles("test")
 @SpringBootTest(properties = "grpc.port=0")
 class MatchFunctionServiceTest {
 
     private static final Logger logger = Logger.getLogger(MatchFunctionServiceTest.class.getName());
 
+    private ManagedChannel channel;
+
+    private final Metadata header = new Metadata();
+
     @LocalRunningGrpcPort
     int port;
+
+    @Autowired
+    OAuthService oAuthService;
+
+    @BeforeEach
+    private void init() {
+        channel = ManagedChannelBuilder.forAddress("localhost", port)
+                .usePlaintext()
+                .build();
+
+        Metadata.Key<String> key = Metadata.Key.of("auth_token", Metadata.ASCII_STRING_MARSHALLER);
+        header.put(key, "abc");
+    }
 
     @Test
     void getStatCodes() {
 
-        final ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", port)
-                .usePlaintext()
-                .build();
+        Mockito.when(oAuthService.getOAuthToken(any())).thenReturn(new OAuthToken());
 
-        StatCodesResponse statCodesResponse = MatchFunctionGrpc.newBlockingStub(channel)
+        StatCodesResponse statCodesResponse = MatchFunctionGrpc.newBlockingStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
                 .getStatCodes(GetStatCodesRequest.newBuilder().build());
 
         assertEquals(0, statCodesResponse.getCodesList().size());
@@ -47,11 +73,8 @@ class MatchFunctionServiceTest {
 
     @Test
     void validateTicket() {
-        final ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", port)
-                .usePlaintext()
-                .build();
 
-        ValidateTicketResponse validateTicketResponse = MatchFunctionGrpc.newBlockingStub(channel)
+        ValidateTicketResponse validateTicketResponse = MatchFunctionGrpc.newBlockingStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
                 .validateTicket(ValidateTicketRequest.newBuilder().build());
 
         assertTrue(validateTicketResponse.getValid());
@@ -80,10 +103,7 @@ class MatchFunctionServiceTest {
 
         final List<Match> matchesReturned = new ArrayList<>();
         final CountDownLatch allRequestsDelivered = new CountDownLatch(1);
-        final ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", port)
-                .usePlaintext()
-                .build();
-        MatchFunctionGrpc.MatchFunctionStub matchFunctionAsyncStub = MatchFunctionGrpc.newStub(channel);
+        MatchFunctionGrpc.MatchFunctionStub matchFunctionAsyncStub = MatchFunctionGrpc.newStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header));
 
         StreamObserver<MakeMatchesRequest> makeMatchesRequestStreamObserver = matchFunctionAsyncStub.makeMatches(new StreamObserver<>() {
 
