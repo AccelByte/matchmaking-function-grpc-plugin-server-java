@@ -1,0 +1,7 @@
+grpc:
+  enable-reflection: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
