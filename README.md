@@ -2,6 +2,13 @@
 ```
 docker build -t mmgrpcserver-springboot .
 ```
+To validate if a multiarch image can be built and then use the current platform image locally, try this:
+```
+docker buildx create --name mybuilder --use
+docker buildx build -t mmgrpcserver-springboot --platform linux/arm64/v8,linux/amd64 .
+docker buildx build -t mmgrpcserver-springboot --load .
+docker buildx rm mybuilder
+```
 
 ## Run docker image version locally
 ```
