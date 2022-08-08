@@ -3,6 +3,7 @@ package com.example.demo;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Metadata;
+import io.grpc.StatusRuntimeException;
 import io.grpc.examples.matchfunctiongrpc.GetStatCodesRequest;
 import io.grpc.examples.matchfunctiongrpc.MakeMatchesRequest;
 import io.grpc.examples.matchfunctiongrpc.Match;
@@ -14,8 +15,10 @@ import io.grpc.examples.matchfunctiongrpc.ValidateTicketRequest;
 import io.grpc.examples.matchfunctiongrpc.ValidateTicketResponse;
 import io.grpc.stub.MetadataUtils;
 import io.grpc.stub.StreamObserver;
+import net.accelbyte.platform.exception.TokenIsExpiredException;
 import net.accelbyte.platform.security.OAuthToken;
 import net.accelbyte.platform.security.service.OAuthService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,6 +72,18 @@ class MatchFunctionServiceTest {
                 .getStatCodes(GetStatCodesRequest.newBuilder().build());
 
         assertEquals(0, statCodesResponse.getCodesList().size());
+    }
+
+    @Test
+    void failsAuthorization() {
+
+        Mockito.when(oAuthService.getOAuthToken(any())).thenThrow(TokenIsExpiredException.class);
+
+        StatusRuntimeException thrown = Assertions.assertThrows(StatusRuntimeException.class, () -> {
+            StatCodesResponse statCodesResponse = MatchFunctionGrpc.newBlockingStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
+                    .getStatCodes(GetStatCodesRequest.newBuilder().build());
+        });
+
     }
 
     @Test
