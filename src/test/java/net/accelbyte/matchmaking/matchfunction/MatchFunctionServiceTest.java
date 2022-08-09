@@ -1,7 +1,9 @@
-package com.example.demo;
+package net.accelbyte.matchmaking.matchfunction;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.Metadata;
+import io.grpc.StatusRuntimeException;
 import io.grpc.examples.matchfunctiongrpc.GetStatCodesRequest;
 import io.grpc.examples.matchfunctiongrpc.MakeMatchesRequest;
 import io.grpc.examples.matchfunctiongrpc.Match;
@@ -11,10 +13,19 @@ import io.grpc.examples.matchfunctiongrpc.StatCodesResponse;
 import io.grpc.examples.matchfunctiongrpc.Ticket;
 import io.grpc.examples.matchfunctiongrpc.ValidateTicketRequest;
 import io.grpc.examples.matchfunctiongrpc.ValidateTicketResponse;
+import io.grpc.stub.MetadataUtils;
 import io.grpc.stub.StreamObserver;
+import net.accelbyte.platform.exception.TokenIsExpiredException;
+import net.accelbyte.platform.security.OAuthToken;
+import net.accelbyte.platform.security.service.OAuthService;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lognet.springboot.grpc.context.LocalRunningGrpcPort;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,35 +34,53 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 
+@ActiveProfiles("test")
 @SpringBootTest(properties = "grpc.port=0")
 class MatchFunctionServiceTest {
 
     private static final Logger logger = Logger.getLogger(MatchFunctionServiceTest.class.getName());
 
+    private ManagedChannel channel;
+
+    private final Metadata header = new Metadata();
+
     @LocalRunningGrpcPort
     int port;
 
-    @Test
-    void getStatCodes() {
+    @Autowired
+    OAuthService oAuthService;
 
-        final ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", port)
+    @BeforeEach
+    private void init() {
+        channel = ManagedChannelBuilder.forAddress("localhost", port)
                 .usePlaintext()
                 .build();
 
-        StatCodesResponse statCodesResponse = MatchFunctionGrpc.newBlockingStub(channel)
+        Metadata.Key<String> key = Metadata.Key.of("auth_token", Metadata.ASCII_STRING_MARSHALLER);
+        header.put(key, "abc");
+    }
+
+    @Test
+    void getStatCodes() {
+        Mockito.reset(oAuthService);
+        Mockito.when(oAuthService.getOAuthToken(any())).thenReturn(new OAuthToken());
+
+        StatCodesResponse statCodesResponse = MatchFunctionGrpc.newBlockingStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
                 .getStatCodes(GetStatCodesRequest.newBuilder().build());
 
         assertEquals(0, statCodesResponse.getCodesList().size());
     }
 
+
+
     @Test
     void validateTicket() {
-        final ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", port)
-                .usePlaintext()
-                .build();
+        Mockito.reset(oAuthService);
+        Mockito.when(oAuthService.getOAuthToken(any())).thenReturn(new OAuthToken());
 
-        ValidateTicketResponse validateTicketResponse = MatchFunctionGrpc.newBlockingStub(channel)
+        ValidateTicketResponse validateTicketResponse = MatchFunctionGrpc.newBlockingStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
                 .validateTicket(ValidateTicketRequest.newBuilder().build());
 
         assertTrue(validateTicketResponse.getValid());
@@ -59,6 +88,8 @@ class MatchFunctionServiceTest {
 
     @Test
     void makeMatches() throws InterruptedException {
+        Mockito.reset(oAuthService);
+        Mockito.when(oAuthService.getOAuthToken(any())).thenReturn(new OAuthToken());
 
         MakeMatchesRequest makeMatchesRequest1 = MakeMatchesRequest.newBuilder()
                 .setTicket(Ticket.newBuilder()
@@ -80,10 +111,7 @@ class MatchFunctionServiceTest {
 
         final List<Match> matchesReturned = new ArrayList<>();
         final CountDownLatch allRequestsDelivered = new CountDownLatch(1);
-        final ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", port)
-                .usePlaintext()
-                .build();
-        MatchFunctionGrpc.MatchFunctionStub matchFunctionAsyncStub = MatchFunctionGrpc.newStub(channel);
+        MatchFunctionGrpc.MatchFunctionStub matchFunctionAsyncStub = MatchFunctionGrpc.newStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header));
 
         StreamObserver<MakeMatchesRequest> makeMatchesRequestStreamObserver = matchFunctionAsyncStub.makeMatches(new StreamObserver<>() {
 
@@ -112,5 +140,17 @@ class MatchFunctionServiceTest {
         assertTrue(allRequestsDelivered.await(1, TimeUnit.SECONDS));
         logger.info("returned match: " + matchesReturned);
         assertEquals(2, matchesReturned.get(0).getTeams(0).getUserIdsList().size());
+    }
+
+    @Test
+    void failsAuthorization() {
+        Mockito.reset(oAuthService);
+        Mockito.when(oAuthService.getOAuthToken(any())).thenThrow(TokenIsExpiredException.class);
+
+        StatusRuntimeException thrown = Assertions.assertThrows(StatusRuntimeException.class, () -> {
+            StatCodesResponse statCodesResponse = MatchFunctionGrpc.newBlockingStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
+                    .getStatCodes(GetStatCodesRequest.newBuilder().build());
+        });
+
     }
 }

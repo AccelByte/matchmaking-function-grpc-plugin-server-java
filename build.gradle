@@ -13,9 +13,24 @@ project.buildDir = 'target'
 repositories {
 	maven { url 'https://repo.spring.io/release' }
 	mavenCentral()
+	maven {
+		url 'https://nexus.accelbyte.net/repository/maven-releases/'
+	}
+	maven {
+		url 'https://jitpack.io'
+	}
+	maven {
+		url 'https://nexus.accelbyte.net/repository/maven-snapshots/'
+	}
 }
 
 dependencies {
+	implementation 'net.accelbyte.platform.common:common-security:2.13.1'
+	implementation 'org.glassfish.jersey.core:jersey-client:2.26'
+	implementation 'org.glassfish.jersey.core:jersey-common:2.26'
+	implementation 'org.glassfish.jersey.ext:jersey-spring4:2.26'
+	implementation 'com.google.guava:guava:30.0-jre'
+	implementation 'com.google.code.gson:gson:2.9.1'
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
