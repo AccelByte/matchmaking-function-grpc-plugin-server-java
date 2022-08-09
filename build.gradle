@@ -34,6 +34,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
@@ -41,11 +42,18 @@ bootJar {
 	destinationDirectory = file(project.buildDir)
 }
 
+bootRun {
+	if ( project.hasProperty('jvmArgs') ) {
+		jvmArgs = (project.jvmArgs.split("\\s+") as List)
+	} else {
+		jvmArgs = ['-javaagent:jars/aws-opentelemetry-agent.jar',
+				   '-Dotel.service.name=CustomMatchMakingFunctionJava',
+		           '-Dotel.propagators=b3multi',
+				   '-Dotel.metrics.exporter=none']
+	}
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
 
-tasks.named('bootBuildImage') {
-	builder = 'paketobuildpacks/builder:tiny'
-	environment = ['BP_NATIVE_IMAGE': 'true']
-}

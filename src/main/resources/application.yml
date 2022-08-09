@@ -33,3 +33,11 @@ app:
 justice:
   publisher:
     namespace: accelbyte
+
+grpc:
+  enable-reflection: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
