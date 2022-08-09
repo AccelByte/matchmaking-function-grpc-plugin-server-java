@@ -1,7 +1,5 @@
 app:
   security:
-    client_id: '098a418dce9e44b097d256a608afdb56'
-    client_secret: '&#$feWAKVX)q~dtOKJKuTcu-h.)xL^Z%'
     iam_server_url: 'https://demo.accelbyte.io/iam'
     token:
       from:
