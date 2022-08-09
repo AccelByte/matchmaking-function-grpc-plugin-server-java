@@ -1,4 +1,4 @@
-package net.accelbyte.matchmaking.matchfunction.grpc;
+package net.accelbyte.matchmaking.matchfunction;
 
 import net.accelbyte.platform.security.service.OAuthService;
 import org.mockito.Mockito;

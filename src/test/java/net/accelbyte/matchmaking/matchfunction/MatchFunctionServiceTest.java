@@ -1,4 +1,4 @@
-package net.accelbyte.matchmaking.matchfunction.grpc;
+package net.accelbyte.matchmaking.matchfunction;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;

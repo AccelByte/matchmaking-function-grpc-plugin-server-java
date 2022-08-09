@@ -1,6 +1,6 @@
-package net.accelbyte.matchmaking.matchfunction.grpc.service;
+package net.accelbyte.matchmaking.matchfunction.service;
 
-import net.accelbyte.matchmaking.matchfunction.grpc.object.RuleObject;
+import net.accelbyte.matchmaking.matchfunction.object.RuleObject;
 import com.google.gson.Gson;
 import io.grpc.examples.matchfunctiongrpc.GetStatCodesRequest;
 import io.grpc.examples.matchfunctiongrpc.MakeMatchesRequest;
