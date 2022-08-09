@@ -53,7 +53,7 @@ public class MatchFunctionService extends MatchFunctionGrpc.MatchFunctionImplBas
         return new StreamObserver<>() {
             @Override
             public void onNext(MakeMatchesRequest makeMatchesRequest) {
-                if(makeMatchesRequest.getParameters() != null && !makeMatchesRequest.getParameters().getRules().getJson().equals("")) {
+                if(makeMatchesRequest.hasParameters()) {
                     logger.info("received parameters");
                     Rules rules = makeMatchesRequest.getParameters().getRules();
                     if (rules != null) {
@@ -70,7 +70,7 @@ public class MatchFunctionService extends MatchFunctionGrpc.MatchFunctionImplBas
                     }
                 }
 
-                if(makeMatchesRequest.getTicket() != null && !makeMatchesRequest.getTicket().getTicketId().equals("")){
+                if(makeMatchesRequest.hasTicket()){
                     logger.info("received ticket");
 
                     Ticket newTicket = makeMatchesRequest.getTicket();
