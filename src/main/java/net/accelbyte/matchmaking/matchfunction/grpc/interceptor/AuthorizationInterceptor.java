@@ -1,4 +1,4 @@
-package com.example.demo.interceptor;
+package net.accelbyte.matchmaking.matchfunction.grpc.interceptor;
 
 import io.grpc.Metadata;
 import io.grpc.ServerCall;

@@ -1,6 +1,6 @@
-package com.example.demo.service;
+package net.accelbyte.matchmaking.matchfunction.grpc.service;
 
-import com.example.demo.object.RuleObject;
+import net.accelbyte.matchmaking.matchfunction.grpc.object.RuleObject;
 import com.google.gson.Gson;
 import io.grpc.examples.matchfunctiongrpc.GetStatCodesRequest;
 import io.grpc.examples.matchfunctiongrpc.MakeMatchesRequest;
@@ -14,11 +14,9 @@ import io.grpc.examples.matchfunctiongrpc.ValidateTicketRequest;
 import io.grpc.examples.matchfunctiongrpc.ValidateTicketResponse;
 import io.grpc.stub.StreamObserver;
 import org.lognet.springboot.grpc.GRpcService;
-import org.springframework.boot.json.GsonJsonParser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;

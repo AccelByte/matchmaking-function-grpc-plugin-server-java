@@ -1,4 +1,4 @@
-package com.example.demo;
+package net.accelbyte.matchmaking.matchfunction.grpc;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -19,16 +19,13 @@ import net.accelbyte.platform.exception.TokenIsExpiredException;
 import net.accelbyte.platform.security.OAuthToken;
 import net.accelbyte.platform.security.service.OAuthService;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lognet.springboot.grpc.context.LocalRunningGrpcPort;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;

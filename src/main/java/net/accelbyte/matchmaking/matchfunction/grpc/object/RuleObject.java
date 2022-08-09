@@ -1,4 +1,4 @@
-package com.example.demo.object;
+package net.accelbyte.matchmaking.matchfunction.grpc.object;
 
 public class RuleObject {
     private int shipCountMin;
