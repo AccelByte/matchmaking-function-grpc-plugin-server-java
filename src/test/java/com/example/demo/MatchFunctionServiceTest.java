@@ -23,10 +23,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.lognet.springboot.grpc.context.LocalRunningGrpcPort;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +67,7 @@ class MatchFunctionServiceTest {
 
     @Test
     void getStatCodes() {
-
+        Mockito.reset(oAuthService);
         Mockito.when(oAuthService.getOAuthToken(any())).thenReturn(new OAuthToken());
 
         StatCodesResponse statCodesResponse = MatchFunctionGrpc.newBlockingStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
@@ -74,20 +76,12 @@ class MatchFunctionServiceTest {
         assertEquals(0, statCodesResponse.getCodesList().size());
     }
 
-    @Test
-    void failsAuthorization() {
 
-        Mockito.when(oAuthService.getOAuthToken(any())).thenThrow(TokenIsExpiredException.class);
-
-        StatusRuntimeException thrown = Assertions.assertThrows(StatusRuntimeException.class, () -> {
-            StatCodesResponse statCodesResponse = MatchFunctionGrpc.newBlockingStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
-                    .getStatCodes(GetStatCodesRequest.newBuilder().build());
-        });
-
-    }
 
     @Test
     void validateTicket() {
+        Mockito.reset(oAuthService);
+        Mockito.when(oAuthService.getOAuthToken(any())).thenReturn(new OAuthToken());
 
         ValidateTicketResponse validateTicketResponse = MatchFunctionGrpc.newBlockingStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
                 .validateTicket(ValidateTicketRequest.newBuilder().build());
@@ -97,6 +91,8 @@ class MatchFunctionServiceTest {
 
     @Test
     void makeMatches() throws InterruptedException {
+        Mockito.reset(oAuthService);
+        Mockito.when(oAuthService.getOAuthToken(any())).thenReturn(new OAuthToken());
 
         MakeMatchesRequest makeMatchesRequest1 = MakeMatchesRequest.newBuilder()
                 .setTicket(Ticket.newBuilder()
@@ -147,5 +143,17 @@ class MatchFunctionServiceTest {
         assertTrue(allRequestsDelivered.await(1, TimeUnit.SECONDS));
         logger.info("returned match: " + matchesReturned);
         assertEquals(2, matchesReturned.get(0).getTeams(0).getUserIdsList().size());
+    }
+
+    @Test
+    void failsAuthorization() {
+        Mockito.reset(oAuthService);
+        Mockito.when(oAuthService.getOAuthToken(any())).thenThrow(TokenIsExpiredException.class);
+
+        StatusRuntimeException thrown = Assertions.assertThrows(StatusRuntimeException.class, () -> {
+            StatCodesResponse statCodesResponse = MatchFunctionGrpc.newBlockingStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
+                    .getStatCodes(GetStatCodesRequest.newBuilder().build());
+        });
+
     }
 }
