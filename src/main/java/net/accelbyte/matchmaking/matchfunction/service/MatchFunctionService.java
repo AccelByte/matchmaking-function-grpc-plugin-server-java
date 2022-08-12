@@ -2,16 +2,16 @@ package net.accelbyte.matchmaking.matchfunction.service;
 
 import net.accelbyte.matchmaking.matchfunction.object.RuleObject;
 import com.google.gson.Gson;
-import io.grpc.examples.matchfunctiongrpc.GetStatCodesRequest;
-import io.grpc.examples.matchfunctiongrpc.MakeMatchesRequest;
-import io.grpc.examples.matchfunctiongrpc.Match;
-import io.grpc.examples.matchfunctiongrpc.MatchFunctionGrpc;
-import io.grpc.examples.matchfunctiongrpc.MatchResponse;
-import io.grpc.examples.matchfunctiongrpc.Rules;
-import io.grpc.examples.matchfunctiongrpc.StatCodesResponse;
-import io.grpc.examples.matchfunctiongrpc.Ticket;
-import io.grpc.examples.matchfunctiongrpc.ValidateTicketRequest;
-import io.grpc.examples.matchfunctiongrpc.ValidateTicketResponse;
+import net.accelbyte.matchmaking.matchfunction.grpc.GetStatCodesRequest;
+import net.accelbyte.matchmaking.matchfunction.grpc.MakeMatchesRequest;
+import net.accelbyte.matchmaking.matchfunction.grpc.Match;
+import net.accelbyte.matchmaking.matchfunction.grpc.MatchFunctionGrpc;
+import net.accelbyte.matchmaking.matchfunction.grpc.MatchResponse;
+import net.accelbyte.matchmaking.matchfunction.grpc.Rules;
+import net.accelbyte.matchmaking.matchfunction.grpc.StatCodesResponse;
+import net.accelbyte.matchmaking.matchfunction.grpc.Ticket;
+import net.accelbyte.matchmaking.matchfunction.grpc.ValidateTicketRequest;
+import net.accelbyte.matchmaking.matchfunction.grpc.ValidateTicketResponse;
 import io.grpc.stub.StreamObserver;
 import org.lognet.springboot.grpc.GRpcService;
 

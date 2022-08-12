@@ -1,5 +1,7 @@
 app:
   security:
+    client_id: ${OAUTH_CLIENT_ID:123}
+    client_secret: ${OAUTH_CLIENT_SECRET:abc}
     iam_server_url: 'https://demo.accelbyte.io/iam'
     token:
       from:
