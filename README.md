@@ -12,7 +12,8 @@ docker buildx rm mybuilder
 
 ## Run docker image version locally
 ```
-docker run -p6565:6565 -p8080:8080 \
+docker run --name  mmgrpcserver-springboot \
+-p6565:6565 -p8080:8080 \
 -eJAVA_OPTS=-javaagent:aws-opentelemetry-agent.jar \
 -eOTEL_EXPORTER_OTLP_ENDPOINT=http://host.docker.internal:4317/ \
 -eOTEL_METRICS_EXPORTER=none \

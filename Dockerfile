@@ -1,4 +1,4 @@
-FROM azul/zulu-openjdk:18.0.2-18.32.11
+FROM azul/zulu-openjdk:17.0.4-17.36.13
 WORKDIR /opt
 RUN apt-get update && \
     apt-get install -y curl
