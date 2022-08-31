@@ -1,0 +1,10 @@
+logging:
+  config: src/main/resources/logback-spring-local.xml
+
+justice:
+  grpc:
+    interceptor:
+      auth:
+        enabled: false
+      debug-logger:
+        enabled: true

@@ -25,6 +25,8 @@ repositories {
 }
 
 dependencies {
+	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	implementation 'net.accelbyte.platform.common:common-security:2.13.1'
 	implementation 'org.glassfish.jersey.core:jersey-client:2.26'
 	implementation 'org.glassfish.jersey.core:jersey-common:2.26'
@@ -35,6 +37,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'io.micrometer:micrometer-registry-prometheus'
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
@@ -49,7 +52,10 @@ bootRun {
 		jvmArgs = ['-javaagent:jars/aws-opentelemetry-agent.jar',
 				   '-Dotel.service.name=CustomMatchMakingFunctionJava',
 		           '-Dotel.propagators=b3multi',
-				   '-Dotel.metrics.exporter=none']
+				   '-Dotel.metrics.exporter=none',
+				   '-Dotel.traces.exporter=zipkin',
+				   '-Dspring.profiles.active=local'
+		           ]
 	}
 }
 

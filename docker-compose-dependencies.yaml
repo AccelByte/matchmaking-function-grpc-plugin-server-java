@@ -5,18 +5,59 @@
 version: '3'
 services:
   jaeger:
-    image: jaegertracing/all-in-one:latest
+    image: jaegertracing/all-in-one:1.37.0
     ports:
-      - "5775:5775/udp"
-      - "6831:6831/udp"
-      - "6832:6832/udp"
-      - "5778:5778"
       - "16686:16686"
-      - "14268:14268"
-      - "9411:9411"
-      - "4317:4317"
+      - "14250:14250"
+
+  envoy:
+    image: envoyproxy/envoy:v1.22.5
+    command: ["--service-cluster", "envoyproxy", "--config-path", "/etc/envoy/envoy.yaml"]
+    ports:
+      - "10000:10000"
+    volumes:
+      - ./compose-config/envoy.yaml:/etc/envoy/envoy.yaml
+
+  envoy2:
+    image: envoyproxy/envoy:v1.22.5
+    command: ["--service-cluster", "envoyproxy2", "--config-path", "/etc/envoy/envoy.yaml"]
+    ports:
+      - "10001:10001"
+    volumes:
+      - ./compose-config/envoy2.yaml:/etc/envoy/envoy.yaml
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.58.0
+    command: ["--config=/etc/otel-collector-config.yaml"]
     environment:
-      - COLLECTOR_OTLP_ENABLED=true
+      - HONEYCOMB_API_KEY
+      - GRAPHANA_CLOUD_TRACES_BASIC_AUTH
+      - GRAPHANA_CLOUD_METRICS_BASIC_AUTH
+    volumes:
+      - ./compose-config/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "9411:9411"   # Zipkin receiver
 
+  fluentd:
+    image: fluent/fluentd:v1.15
+    command: ["-v"]
+    environment:
+      - HONEYCOMB_API_HEADERS
+    volumes:
+      - ./compose-config/fluent.conf:/fluentd/etc/fluent.conf
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
 
-
+  fluentd-loki:
+    image: grafana/fluent-plugin-loki:master  # based on 1.9 and not having the updated http plugin for json-array
+    command: ["-v"]
+    environment:
+      - LOKI_URL
+      - LOKI_USERNAME
+      - LOKI_PASSWORD
+    volumes:
+      - ./compose-config/fluent-loki.conf:/fluentd/etc/fluent.conf
+    ports:
+      - "24225:24225"
+      - "24225:24225/udp"
