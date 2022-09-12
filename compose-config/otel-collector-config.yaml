@@ -38,15 +38,34 @@ exporters:
 
 processors:
   batch:
+  tail_sampling:
+    policies:
+      - type: string_attribute
+        string_attribute:
+          key: http.target
+          values:
+            - ^\/(?:metrics\/.*|health.*|actuator\/.*)$
+          enabled_regex_matching: true
+          invert_match: true
+      - type: status_code
+        status_code:
+          status_codes:
+            - ERROR
+      - type: latency
+        latency:
+          threshold_ms: 5000
+      - type: probabilistic
+        probabilistic:
+          sampling_percentage: ${GRAPHANA_CLOUD_TRACES_SAMPLING_PERCENTAGE}
 
 service:
   telemetry:
     logs:
-      level: "debug"
+      level: "info"
   pipelines:
     traces:
       receivers: [zipkin]
-      processors: [batch]
+      processors: [batch,tail_sampling]
       exporters: [otlp/honeycomb,otlp/graphana-cloud,jaeger]
     metrics:
       receivers: [prometheus]
