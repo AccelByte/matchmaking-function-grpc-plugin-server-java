@@ -1,0 +1,49 @@
+server:
+  log_level: info
+
+traces:
+  configs:
+    - name: server_traces
+      receivers:
+        zipkin:
+      remote_write:
+        - endpoint: "${GRAPHANA_CLOUD_TRACES_ENDPOINT}"
+          basic_auth:
+            username: ${GRAPHANA_CLOUD_TRACES_BASIC_USERNAME}
+            password: ${GRAPHANA_CLOUD_TRACES_BASIC_PASSWORD}
+      tail_sampling:
+        policies:
+          - type: string_attribute
+            string_attribute:
+              key: http.target
+              values:
+                - ^\/(?:metrics\/.*|health.*|actuator\/.*)$
+              enabled_regex_matching: true
+              invert_match: true
+          - type: status_code
+            status_code:
+              status_codes:
+                - ERROR
+          - type: latency
+            latency:
+              threshold_ms: 5000
+          - type: probabilistic
+            probabilistic:
+              sampling_percentage: ${GRAPHANA_CLOUD_TRACES_SAMPLING_PERCENTAGE}
+
+metrics:
+  global:
+    scrape_interval: 60s
+    scrape_timeout: 10s
+    remote_write:
+      - url: "${GRAPHANA_CLOUD_METRICS_ENDPOINT}"
+        basic_auth:
+          username: ${GRAPHANA_CLOUD_METRICS_BASIC_USERNAME}
+          password: ${GRAPHANA_CLOUD_METRICS_BASIC_PASSWORD}
+  configs:
+    - name: default
+      scrape_configs:
+      - job_name: CustomMatchMakingFunctionJava-metrics
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: [ 'host.docker.internal:8080' ]
