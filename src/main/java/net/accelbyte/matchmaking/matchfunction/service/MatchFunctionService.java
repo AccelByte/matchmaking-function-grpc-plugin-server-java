@@ -1,5 +1,6 @@
 package net.accelbyte.matchmaking.matchfunction.service;
 
+import lombok.extern.slf4j.Slf4j;
 import net.accelbyte.matchmaking.matchfunction.object.RuleObject;
 import com.google.gson.Gson;
 import net.accelbyte.matchmaking.matchfunction.grpc.GetStatCodesRequest;
@@ -21,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+@Slf4j
 @GRpcService
 public class MatchFunctionService extends MatchFunctionGrpc.MatchFunctionImplBase {
 
@@ -33,6 +35,7 @@ public class MatchFunctionService extends MatchFunctionGrpc.MatchFunctionImplBas
 
     @Override
     public void getStatCodes(GetStatCodesRequest request, StreamObserver<StatCodesResponse> responseObserver) {
+        log.info("received getStatCodes request.");
         StatCodesResponse response = StatCodesResponse.newBuilder().build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();

@@ -1,4 +1,7 @@
 app:
+  config:
+    namespace: ${NAMESPACE:accelbyte}
+    resource_name: 'MMV2GRPCSERVICE'
   security:
     client_id: ${OAUTH_CLIENT_ID:123}
     client_secret: ${OAUTH_CLIENT_SECRET:abc}

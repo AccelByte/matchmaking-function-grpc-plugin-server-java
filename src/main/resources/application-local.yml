@@ -5,6 +5,6 @@ justice:
   grpc:
     interceptor:
       auth:
-        enabled: false
+        enabled: true
       debug-logger:
         enabled: true

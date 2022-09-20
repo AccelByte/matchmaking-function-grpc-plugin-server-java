@@ -17,6 +17,7 @@ import io.grpc.stub.MetadataUtils;
 import io.grpc.stub.StreamObserver;
 import net.accelbyte.platform.exception.TokenIsExpiredException;
 import net.accelbyte.platform.security.OAuthToken;
+import net.accelbyte.platform.security.Permission;
 import net.accelbyte.platform.security.service.OAuthService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +29,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -35,6 +37,7 @@ import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 @ActiveProfiles("test")
 @SpringBootTest(properties = "grpc.port=0")
@@ -58,14 +61,16 @@ class MatchFunctionServiceTest {
                 .usePlaintext()
                 .build();
 
-        Metadata.Key<String> key = Metadata.Key.of("auth_token", Metadata.ASCII_STRING_MARSHALLER);
-        header.put(key, "abc");
+        Metadata.Key<String> key = Metadata.Key.of("authorization", Metadata.ASCII_STRING_MARSHALLER);
+        header.put(key, "Bearer abc");
     }
 
     @Test
     void getStatCodes() {
         Mockito.reset(oAuthService);
-        Mockito.when(oAuthService.getOAuthToken(any())).thenReturn(new OAuthToken());
+        OAuthToken oAuthToken = new OAuthToken();
+        Mockito.when(oAuthService.getOAuthToken(any())).thenReturn(oAuthToken);
+        Mockito.when(oAuthService.validateTokenPermission(any(), any(), eq("accelbyte"), eq(null))).thenReturn(true);
 
         StatCodesResponse statCodesResponse = MatchFunctionGrpc.newBlockingStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
                 .getStatCodes(GetStatCodesRequest.newBuilder().build());
@@ -79,6 +84,7 @@ class MatchFunctionServiceTest {
     void validateTicket() {
         Mockito.reset(oAuthService);
         Mockito.when(oAuthService.getOAuthToken(any())).thenReturn(new OAuthToken());
+        Mockito.when(oAuthService.validateTokenPermission(any(), any(), eq("accelbyte"), eq(null))).thenReturn(true);
 
         ValidateTicketResponse validateTicketResponse = MatchFunctionGrpc.newBlockingStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
                 .validateTicket(ValidateTicketRequest.newBuilder().build());
@@ -90,6 +96,7 @@ class MatchFunctionServiceTest {
     void makeMatches() throws InterruptedException {
         Mockito.reset(oAuthService);
         Mockito.when(oAuthService.getOAuthToken(any())).thenReturn(new OAuthToken());
+        Mockito.when(oAuthService.validateTokenPermission(any(), any(), eq("accelbyte"), eq(null))).thenReturn(true);
 
         MakeMatchesRequest makeMatchesRequest1 = MakeMatchesRequest.newBuilder()
                 .setTicket(Ticket.newBuilder()
