@@ -14,13 +14,21 @@ repositories {
 	maven { url 'https://repo.spring.io/release' }
 	mavenCentral()
 	maven {
-		url 'https://nexus.accelbyte.net/repository/maven-releases/'
+		credentials {
+			username "$abNexusUsername"
+			password "$abNexusPassword"
+		}
+		url 'https://nexus.tools.accelbyte.net/repository/maven-releases/'
 	}
 	maven {
 		url 'https://jitpack.io'
 	}
 	maven {
-		url 'https://nexus.accelbyte.net/repository/maven-snapshots/'
+		credentials {
+			username "$abNexusUsername"
+			password "$abNexusPassword"
+		}
+		url 'https://nexus.tools.accelbyte.net/repository/maven-snapshots/'
 	}
 }
 
