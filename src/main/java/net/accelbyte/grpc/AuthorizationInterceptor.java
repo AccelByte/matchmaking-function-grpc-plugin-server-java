@@ -51,7 +51,7 @@ public class AuthorizationInterceptor implements ServerInterceptor {
                 try {
                     String token = auth_token.split(" ")[1];
                     OAuthToken oAuthToken = oAuthService.getOAuthToken(token);
-                    if(!oAuthService.validateTokenPermission(oAuthToken, requiredPermission, namespace, null)) {
+                    if(oAuthToken == null || !oAuthService.validateTokenPermission(oAuthToken, requiredPermission, namespace, null)) {
                         unAuthorizedCall(call, headers);
                     }
                 } catch (TokenIsExpiredException e) {

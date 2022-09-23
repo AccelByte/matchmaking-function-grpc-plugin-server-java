@@ -7,7 +7,6 @@ import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import lombok.extern.slf4j.Slf4j;
-import net.accelbyte.platform.exception.UnauthorizedException;
 import org.lognet.springboot.grpc.GRpcGlobalInterceptor;
 import org.springframework.core.annotation.Order;
 
@@ -53,8 +52,9 @@ public class ExceptionHandlingInterceptor implements ServerInterceptor {
         }
 
         private void handleException(RuntimeException exception, ServerCall<ReqT, RespT> serverCall, Metadata metadata) {
-            if (exception instanceof Exception) {
-                serverCall.close(Status.UNIMPLEMENTED.withDescription("demo desc"), metadata);
+            log.error("Exception caught", exception);
+            if (exception instanceof IllegalArgumentException) {
+                serverCall.close(Status.INVALID_ARGUMENT.withDescription(exception.getMessage()), metadata);
             } else {
                 serverCall.close(Status.UNKNOWN, metadata);
             }
