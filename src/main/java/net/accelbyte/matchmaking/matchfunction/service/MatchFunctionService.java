@@ -43,6 +43,7 @@ public class MatchFunctionService extends MatchFunctionGrpc.MatchFunctionImplBas
 
     @Override
     public void validateTicket(ValidateTicketRequest request, StreamObserver<ValidateTicketResponse> responseObserver) {
+        log.info("received validateTicket request.");
         ValidateTicketResponse response = ValidateTicketResponse.newBuilder().setValid(true).build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
@@ -54,6 +55,7 @@ public class MatchFunctionService extends MatchFunctionGrpc.MatchFunctionImplBas
         return new StreamObserver<>() {
             @Override
             public void onNext(MakeMatchesRequest makeMatchesRequest) {
+                logger.info("received make matches request.");
                 if(makeMatchesRequest.hasParameters()) {
                     logger.info("received parameters");
                     Rules rules = makeMatchesRequest.getParameters().getRules();
