@@ -19,7 +19,9 @@ docker-compose -f docker-compose-dependencies.yaml up
 
 ## To run docker image version locally with fluentd driver
 ```
-docker run --rm --log-driver=fluentd --log-opt tag=docker --log-opt fluentd-address=localhost:24225 --name  mmgrpcserver-springboot \
+docker run --rm --log-driver=fluentd --log-opt tag=docker --log-opt fluentd-address=localhost:24225 \
+--name  mmgrpcserver-springboot \
+--add-host=host.docker.internal:host-gateway\
 -p6565:6565 -p8080:8080 \
 -eJAVA_OPTS='-javaagent:aws-opentelemetry-agent.jar' \
 -eOTEL_EXPORTER_ZIPKIN_ENDPOINT=http://host.docker.internal:9411/api/v2/spans \
@@ -33,7 +35,7 @@ mmgrpcserver-springboot
 
 ```
 
-## To run docker image version locally with loki driver and Auth interceptor disabled
+## To run docker image version locally with loki driver
 
 Need to install loki plugin first: ```docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions```
 ```
