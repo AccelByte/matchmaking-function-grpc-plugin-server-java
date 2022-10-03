@@ -82,7 +82,7 @@ static_resources:
                   address:
                     socket_address:
                       address: host.docker.internal
-                      port_value: 10001
+                      port_value: 6565
     - name: otel-collector
       type: STRICT_DNS
       lb_policy: ROUND_ROBIN
