@@ -17,21 +17,25 @@ Copy .env.local to a new file called .env and get credentials from LassPass.
 docker-compose -f docker-compose-dependencies.yaml up
 ```
 
-## To run docker image version locally with fluentd driver and Auth interceptor disabled
+## To run docker image version locally with fluentd driver
 ```
-docker run --rm --log-driver=fluentd --log-opt tag=docker --log-opt fluentd-address=localhost:24225 --name  mmgrpcserver-springboot \
+docker run --rm --log-driver=fluentd --log-opt tag=docker --log-opt fluentd-address=localhost:24225 \
+--name  mmgrpcserver-springboot \
+--add-host=host.docker.internal:host-gateway\
 -p6565:6565 -p8080:8080 \
--eJAVA_OPTS='-javaagent:aws-opentelemetry-agent.jar -Djustice.grpc.interceptor.auth.enabled=false' \
+-eJAVA_OPTS='-javaagent:aws-opentelemetry-agent.jar' \
 -eOTEL_EXPORTER_ZIPKIN_ENDPOINT=http://host.docker.internal:9411/api/v2/spans \
 -eOTEL_TRACES_EXPORTER=zipkin \
 -eOTEL_METRICS_EXPORTER=none \
 -eOTEL_SERVICE_NAME=CustomMatchMakingFunctionJavaDocker \
 -eOTEL_PROPAGATORS=b3multi \
+-eAPP_SECURITY_CLIENT_ID=${APP_SECURITY_CLIENT_ID} \
+-eAPP_SECURITY_CLIENT_SECRET=${APP_SECURITY_CLIENT_SECRET} \
 mmgrpcserver-springboot
 
 ```
 
-## To run docker image version locally with loki driver and Auth interceptor disabled
+## To run docker image version locally with loki driver
 
 Need to install loki plugin first: ```docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions```
 ```
@@ -40,13 +44,16 @@ docker run --rm --log-driver=loki \
 --log-opt loki-retries=5 \
 --log-opt loki-batch-size=400 \
 --name  mmgrpcserver-springboot \
+--add-host=host.docker.internal:host-gateway\
 -p6565:6565 -p8080:8080 \
--eJAVA_OPTS='-javaagent:aws-opentelemetry-agent.jar -Djustice.grpc.interceptor.auth.enabled=false' \
+-eJAVA_OPTS='-javaagent:aws-opentelemetry-agent.jar \
 -eOTEL_EXPORTER_ZIPKIN_ENDPOINT=http://host.docker.internal:9411/api/v2/spans \
 -eOTEL_TRACES_EXPORTER=zipkin \
 -eOTEL_METRICS_EXPORTER=none \
 -eOTEL_SERVICE_NAME=CustomMatchMakingFunctionJavaDocker \
 -eOTEL_PROPAGATORS=b3multi \
+-eAPP_SECURITY_CLIENT_ID=${APP_SECURITY_CLIENT_ID} \
+-eAPP_SECURITY_CLIENT_SECRET=${APP_SECURITY_CLIENT_SECRET} \
 mmgrpcserver-springboot
 
 ```
