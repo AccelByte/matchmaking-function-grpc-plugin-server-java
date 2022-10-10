@@ -17,7 +17,6 @@ import io.grpc.stub.MetadataUtils;
 import io.grpc.stub.StreamObserver;
 import net.accelbyte.platform.exception.TokenIsExpiredException;
 import net.accelbyte.platform.security.OAuthToken;
-import net.accelbyte.platform.security.Permission;
 import net.accelbyte.platform.security.service.OAuthService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +28,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -154,8 +152,8 @@ class MatchFunctionServiceTest {
         Mockito.reset(oAuthService);
         Mockito.when(oAuthService.getOAuthToken(any())).thenThrow(TokenIsExpiredException.class);
 
-        StatusRuntimeException thrown = Assertions.assertThrows(StatusRuntimeException.class, () -> {
-            StatCodesResponse statCodesResponse = MatchFunctionGrpc.newBlockingStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
+        Assertions.assertThrows(StatusRuntimeException.class, () -> {
+            MatchFunctionGrpc.newBlockingStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
                     .getStatCodes(GetStatCodesRequest.newBuilder().build());
         });
 
