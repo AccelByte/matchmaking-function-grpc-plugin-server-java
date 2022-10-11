@@ -15,6 +15,7 @@ import net.accelbyte.matchmaking.matchfunction.grpc.ValidateTicketRequest;
 import net.accelbyte.matchmaking.matchfunction.grpc.ValidateTicketResponse;
 import io.grpc.stub.MetadataUtils;
 import io.grpc.stub.StreamObserver;
+import lombok.extern.slf4j.Slf4j;
 import net.accelbyte.platform.exception.TokenIsExpiredException;
 import net.accelbyte.platform.security.OAuthToken;
 import net.accelbyte.platform.security.service.OAuthService;
@@ -31,18 +32,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
+@Slf4j
 @ActiveProfiles("test")
 @SpringBootTest(properties = "grpc.port=0")
 class MatchFunctionServiceTest {
-
-    private static final Logger logger = Logger.getLogger(MatchFunctionServiceTest.class.getName());
-
     private ManagedChannel channel;
 
     private final Metadata header = new Metadata();
@@ -75,8 +73,6 @@ class MatchFunctionServiceTest {
 
         assertEquals(0, statCodesResponse.getCodesList().size());
     }
-
-
 
     @Test
     void validateTicket() {
@@ -122,18 +118,18 @@ class MatchFunctionServiceTest {
 
             @Override
             public void onNext(MatchResponse matchResponse) {
-                logger.info("received match response" + matchResponse.getMatch());
+                log.info("received match response" + matchResponse.getMatch());
                 matchesReturned.add(matchResponse.getMatch());
             }
 
             @Override
             public void onError(Throwable t) {
-                logger.warning("make match failed");
+                log.warn("make match failed");
             }
 
             @Override
             public void onCompleted() {
-                logger.info("make match completed");
+                log.info("make match completed");
                 allRequestsDelivered.countDown();
             }
         });
@@ -143,7 +139,7 @@ class MatchFunctionServiceTest {
         makeMatchesRequestStreamObserver.onCompleted();
 
         assertTrue(allRequestsDelivered.await(1, TimeUnit.SECONDS));
-        logger.info("returned match: " + matchesReturned);
+        log.info("returned match: " + matchesReturned);
         assertEquals(2, matchesReturned.get(0).getTeams(0).getUserIdsList().size());
     }
 

@@ -18,18 +18,13 @@ import org.lognet.springboot.grpc.GRpcService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Slf4j
 @GRpcService
 public class MatchFunctionService extends MatchFunctionGrpc.MatchFunctionImplBase {
-
-    private static final Logger logger = Logger.getLogger(MatchFunctionService.class.getName());
-
     private final List<Ticket> unmatchedTickets = new ArrayList<>();
-    
+
     private int shipCountMin = 2;
     private int shipCountMax = 2;
 
@@ -55,45 +50,46 @@ public class MatchFunctionService extends MatchFunctionGrpc.MatchFunctionImplBas
         return new StreamObserver<>() {
             @Override
             public void onNext(MakeMatchesRequest makeMatchesRequest) {
-                logger.info("received make matches request.");
-                if(makeMatchesRequest.hasParameters()) {
-                    logger.info("received parameters");
+                log.info("received make matches request.");
+                if (makeMatchesRequest.hasParameters()) {
+                    log.info("received parameters");
                     Rules rules = makeMatchesRequest.getParameters().getRules();
                     if (rules != null) {
                         Gson gson = new Gson();
                         RuleObject ruleObject = gson.fromJson(rules.getJson(), RuleObject.class);
                         int newShipCountMin = ruleObject.getShipCountMin();
                         int newShipCountMax = ruleObject.getShipCountMax();
-                        if(newShipCountMin != 0 && newShipCountMax != 0
-                        && newShipCountMin <= newShipCountMax){
+                        if (newShipCountMin != 0 && newShipCountMax != 0
+                                && newShipCountMin <= newShipCountMax) {
                             MatchFunctionService.this.shipCountMin = newShipCountMin;
                             MatchFunctionService.this.shipCountMax = newShipCountMax;
-                            logger.info("updated shipCountMin= "+ MatchFunctionService.this.shipCountMin +" and shipCountMax= " + MatchFunctionService.this.shipCountMax);
+                            log.info("updated shipCountMin= " + MatchFunctionService.this.shipCountMin
+                                    + " and shipCountMax= " + MatchFunctionService.this.shipCountMax);
                         }
                     }
                 }
 
-                if(makeMatchesRequest.hasTicket()){
-                    logger.info("received ticket");
+                if (makeMatchesRequest.hasTicket()) {
+                    log.info("received ticket");
 
                     Ticket newTicket = makeMatchesRequest.getTicket();
                     unmatchedTickets.add(newTicket);
-                    if(unmatchedTickets.size() == shipCountMax) {
+                    if (unmatchedTickets.size() == shipCountMax) {
                         createAndPushMatchResultAndClearUnmatchedTickets(responseObserver);
                     }
-                    logger.info("unmatched tickets size: " + unmatchedTickets.size());
+                    log.info("unmatched tickets size: " + unmatchedTickets.size());
                 }
             }
 
             @Override
             public void onError(Throwable t) {
-                logger.log(Level.WARNING, "makeMatches cancelled");
+                log.warn("makeMatches cancelled");
             }
 
             @Override
             public void onCompleted() {
-                logger.info("on complete. unmatched tickets size: " + unmatchedTickets.size());
-                if(unmatchedTickets.size() >= shipCountMin) {
+                log.info("on complete. unmatched tickets size: " + unmatchedTickets.size());
+                if (unmatchedTickets.size() >= shipCountMin) {
                     createAndPushMatchResultAndClearUnmatchedTickets(responseObserver);
                 }
                 responseObserver.onCompleted();
