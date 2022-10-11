@@ -5,7 +5,7 @@
 version: '3'
 services:
   app:
-    image: mmgrpcserver-springboot:latest
+    image: mmgrpc-server-springboot:latest
     ports:
       - "6565:6565"
       - "8080:8080"
