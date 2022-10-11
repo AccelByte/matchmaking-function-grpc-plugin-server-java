@@ -1,8 +1,6 @@
 FROM azul/zulu-openjdk:17.0.4-17.36.13
 WORKDIR /opt
-RUN apt-get update && \
-    apt-get install -y curl
-RUN curl -L https://github.com/aws-observability/aws-otel-java-instrumentation/releases/download/v1.16.0/aws-opentelemetry-agent.jar  --output aws-opentelemetry-agent.jar
+COPY jars/aws-opentelemetry-agent.jar /opt/aws-opentelemetry-agent.jar
 COPY target/*.jar /opt/app.jar
 # Add "-javaagent:aws-opentelemetry-agent.jar" to $JAVA_OPTS to run with opentelementry java-agent
 EXPOSE 8080
