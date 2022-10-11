@@ -64,11 +64,11 @@ class MatchFunctionServiceTest {
     @Test
     void getStatCodes() {
         Mockito.reset(oAuthService);
-        OAuthToken oAuthToken = new OAuthToken();
+        final OAuthToken oAuthToken = new OAuthToken();
         Mockito.when(oAuthService.getOAuthToken(any())).thenReturn(oAuthToken);
         Mockito.when(oAuthService.validateTokenPermission(any(), any(), eq("accelbyte"), eq(null))).thenReturn(true);
 
-        StatCodesResponse statCodesResponse = MatchFunctionGrpc.newBlockingStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
+        final StatCodesResponse statCodesResponse = MatchFunctionGrpc.newBlockingStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
                 .getStatCodes(GetStatCodesRequest.newBuilder().build());
 
         assertEquals(0, statCodesResponse.getCodesList().size());
@@ -80,7 +80,7 @@ class MatchFunctionServiceTest {
         Mockito.when(oAuthService.getOAuthToken(any())).thenReturn(new OAuthToken());
         Mockito.when(oAuthService.validateTokenPermission(any(), any(), eq("accelbyte"), eq(null))).thenReturn(true);
 
-        ValidateTicketResponse validateTicketResponse = MatchFunctionGrpc.newBlockingStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
+        final ValidateTicketResponse validateTicketResponse = MatchFunctionGrpc.newBlockingStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
                 .validateTicket(ValidateTicketRequest.newBuilder().build());
 
         assertTrue(validateTicketResponse.getValid());
@@ -92,7 +92,7 @@ class MatchFunctionServiceTest {
         Mockito.when(oAuthService.getOAuthToken(any())).thenReturn(new OAuthToken());
         Mockito.when(oAuthService.validateTokenPermission(any(), any(), eq("accelbyte"), eq(null))).thenReturn(true);
 
-        MakeMatchesRequest makeMatchesRequest1 = MakeMatchesRequest.newBuilder()
+        final MakeMatchesRequest makeMatchesRequest1 = MakeMatchesRequest.newBuilder()
                 .setTicket(Ticket.newBuilder()
                         .setTicketId("ad74df0e")
                         .addPlayers(Ticket.PlayerData.newBuilder()
@@ -101,7 +101,7 @@ class MatchFunctionServiceTest {
                         .build())
                 .build();
 
-        MakeMatchesRequest makeMatchesRequest2 = MakeMatchesRequest.newBuilder()
+                final MakeMatchesRequest makeMatchesRequest2 = MakeMatchesRequest.newBuilder()
                 .setTicket(Ticket.newBuilder()
                         .setTicketId("34f0765fa6ba")
                         .addPlayers(Ticket.PlayerData.newBuilder()
@@ -112,10 +112,9 @@ class MatchFunctionServiceTest {
 
         final List<Match> matchesReturned = new ArrayList<>();
         final CountDownLatch allRequestsDelivered = new CountDownLatch(1);
-        MatchFunctionGrpc.MatchFunctionStub matchFunctionAsyncStub = MatchFunctionGrpc.newStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header));
+        final MatchFunctionGrpc.MatchFunctionStub matchFunctionAsyncStub = MatchFunctionGrpc.newStub(channel).withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header));
 
-        StreamObserver<MakeMatchesRequest> makeMatchesRequestStreamObserver = matchFunctionAsyncStub.makeMatches(new StreamObserver<>() {
-
+        final StreamObserver<MakeMatchesRequest> makeMatchesRequestStreamObserver = matchFunctionAsyncStub.makeMatches(new StreamObserver<>() {
             @Override
             public void onNext(MatchResponse matchResponse) {
                 log.info("received match response" + matchResponse.getMatch());

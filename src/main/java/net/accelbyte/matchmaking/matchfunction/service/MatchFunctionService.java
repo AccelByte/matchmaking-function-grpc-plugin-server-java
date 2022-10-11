@@ -55,10 +55,10 @@ public class MatchFunctionService extends MatchFunctionGrpc.MatchFunctionImplBas
                     log.info("received parameters");
                     Rules rules = makeMatchesRequest.getParameters().getRules();
                     if (rules != null) {
-                        Gson gson = new Gson();
-                        RuleObject ruleObject = gson.fromJson(rules.getJson(), RuleObject.class);
-                        int newShipCountMin = ruleObject.getShipCountMin();
-                        int newShipCountMax = ruleObject.getShipCountMax();
+                        final Gson gson = new Gson();
+                        final RuleObject ruleObject = gson.fromJson(rules.getJson(), RuleObject.class);
+                        final int newShipCountMin = ruleObject.getShipCountMin();
+                        final int newShipCountMax = ruleObject.getShipCountMax();
                         if (newShipCountMin != 0 && newShipCountMax != 0
                                 && newShipCountMin <= newShipCountMax) {
                             MatchFunctionService.this.shipCountMin = newShipCountMin;
@@ -71,8 +71,7 @@ public class MatchFunctionService extends MatchFunctionGrpc.MatchFunctionImplBas
 
                 if (makeMatchesRequest.hasTicket()) {
                     log.info("received ticket");
-
-                    Ticket newTicket = makeMatchesRequest.getTicket();
+                    final Ticket newTicket = makeMatchesRequest.getTicket();
                     unmatchedTickets.add(newTicket);
                     if (unmatchedTickets.size() == shipCountMax) {
                         createAndPushMatchResultAndClearUnmatchedTickets(responseObserver);
@@ -98,18 +97,18 @@ public class MatchFunctionService extends MatchFunctionGrpc.MatchFunctionImplBas
     }
 
     private void createAndPushMatchResultAndClearUnmatchedTickets(StreamObserver<MatchResponse> responseObserver) {
-        Match match = makeMatchFromUnmatchedTickets();
+        final Match match = makeMatchFromUnmatchedTickets();
         responseObserver.onNext(MatchResponse.newBuilder().setMatch(match).build());
         unmatchedTickets.clear();
     }
 
     private Match makeMatchFromUnmatchedTickets() {
-        List<Ticket.PlayerData> playerDataList = new ArrayList<>();
+        final List<Ticket.PlayerData> playerDataList = new ArrayList<>();
         for (int i = 0; i < unmatchedTickets.size(); i++) {
             playerDataList.addAll(unmatchedTickets.get(i).getPlayersList());
         }
-        List<String> playerIds = playerDataList.stream().map(e -> e.getPlayerId()).collect(Collectors.toList());
-        Match match = Match.newBuilder()
+        final List<String> playerIds = playerDataList.stream().map(e -> e.getPlayerId()).collect(Collectors.toList());
+        final Match match = Match.newBuilder()
                 .addRegionPreferences("any")
                 .addAllTickets(unmatchedTickets)
                 .addTeams(Match.Team.newBuilder().addAllUserIds(playerIds).build())
