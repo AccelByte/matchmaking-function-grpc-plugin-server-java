@@ -63,3 +63,8 @@ mmgrpcserver-springboot
 ```
 docker-compose -f docker-compose-dependencies.yaml -f docker-compose-app.yaml up
 ```
+
+### Configure local Grafana, Tempo, Loki
+In local Grafana, localhost:3000
+add data source Tempo, URL http://tempo:3200
+add data source Loki, URL http://loki:3100
