@@ -24,6 +24,10 @@ exporters:
     headers:
       authorization: Basic ${GRAPHANA_CLOUD_TRACES_BASIC_AUTH}
       # username: 272095
+  otlp/graphana-local:
+    endpoint: tempo:4317
+    tls:
+      insecure: true
   prometheusremotewrite:
     endpoint: https://prometheus-prod-10-prod-us-central-0.grafana.net/api/prom/push
     headers:
@@ -66,7 +70,7 @@ service:
     traces:
       receivers: [zipkin]
       processors: [batch,tail_sampling]
-      exporters: [otlp/honeycomb,otlp/graphana-cloud,jaeger]
+      exporters: [otlp/graphana-local,otlp/honeycomb,otlp/graphana-cloud,jaeger]
     metrics:
       receivers: [prometheus]
       processors: [batch]
