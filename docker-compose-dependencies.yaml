@@ -49,6 +49,8 @@ services:
       - "4317"  # otlp grpc
       - "4318"  # otlp http
       - "9411"   # zipkin
+    extra_hosts:
+      - host.docker.internal:host-gateway
 
   loki:
     image: grafana/loki
@@ -57,6 +59,8 @@ services:
     volumes:
       - ./compose-config/loki-config.yaml:/etc/loki/local-config.yaml
     command: -config.file=/etc/loki/local-config.yaml
+    extra_hosts:
+      - host.docker.internal:host-gateway
 
   prometheus:
     image: prom/prometheus:latest
@@ -68,6 +72,8 @@ services:
       - ./compose-config/prometheus.yaml:/etc/prometheus.yaml
     ports:
       - "9090:9090"
+    extra_hosts:
+      - host.docker.internal:host-gateway
 
   grafana:
     image: grafana/grafana:9.1.6
@@ -79,6 +85,8 @@ services:
       - GF_AUTH_DISABLE_LOGIN_FORM=true
     ports:
       - "3000:3000"
+    extra_hosts:
+      - host.docker.internal:host-gateway
 
   fluentd:
     image: fluent/fluentd:v1.15
