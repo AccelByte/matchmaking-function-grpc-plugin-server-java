@@ -23,25 +23,15 @@ exporters:
     endpoint: "tempo-us-central1.grafana.net:443"
     headers:
       authorization: Basic ${GRAPHANA_CLOUD_TRACES_BASIC_AUTH}
-      # username: 272095
   otlp/graphana-local:
     endpoint: tempo:4317
     tls:
       insecure: true
-#  prometheus:
-#    endpoint: "0.0.0.0:8889"
-#    const_labels:
-#      label1: value1
   prometheusremotewrite:
     endpoint: 'http://prometheus:9090/api/v1/write'
     tls:
      insecure: true
 
-#  otlp/honeycomb-metrics:
-#    endpoint: "api.honeycomb.io:443"
-#    headers:
-#      "x-honeycomb-team": "${HONEYCOMB_API_KEY}"
-#      "x-honeycomb-dataset": custommatchmakingfunctionjava
 
 processors:
   batch:
