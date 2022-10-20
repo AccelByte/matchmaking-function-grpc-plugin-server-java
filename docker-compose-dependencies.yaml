@@ -25,6 +25,7 @@ services:
     command: ["--config=/etc/otel-collector-config.yaml"]
     depends_on:
       - tempo
+      - jaeger
     environment:
       - HONEYCOMB_API_KEY
       - GRAPHANA_CLOUD_TRACES_BASIC_AUTH
