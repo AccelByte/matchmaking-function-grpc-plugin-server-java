@@ -1,12 +1,12 @@
 ## Build docker image locally
 ```
-docker build -t mmgrpcserver-springboot .
+docker build -t mmgrpc-server-springboot .
 ```
 To validate if a multiarch image can be built and then use the current platform image locally, try this:
 ```
 docker buildx create --name mybuilder --use
-docker buildx build -t mmgrpcserver-springboot --platform linux/arm64/v8,linux/amd64 .
-docker buildx build -t mmgrpcserver-springboot --load .
+docker buildx build -t mmgrpc-server-springboot --platform linux/arm64/v8,linux/amd64 .
+docker buildx build -t mmgrpc-server-springboot --load .
 docker buildx rm mybuilder
 ```
 
@@ -20,7 +20,7 @@ docker-compose -f docker-compose-dependencies.yaml up
 ## To run docker image version locally with fluentd driver
 ```
 docker run --rm --log-driver=fluentd --log-opt tag=docker --log-opt fluentd-address=localhost:24225 \
---name  mmgrpcserver-springboot \
+--name  mmgrpc-server-springboot \
 --add-host=host.docker.internal:host-gateway\
 -p6565:6565 -p8080:8080 \
 -eJAVA_OPTS='-javaagent:aws-opentelemetry-agent.jar' \
@@ -31,7 +31,7 @@ docker run --rm --log-driver=fluentd --log-opt tag=docker --log-opt fluentd-addr
 -eOTEL_PROPAGATORS=b3multi \
 -eAPP_SECURITY_CLIENT_ID=${APP_SECURITY_CLIENT_ID} \
 -eAPP_SECURITY_CLIENT_SECRET=${APP_SECURITY_CLIENT_SECRET} \
-mmgrpcserver-springboot
+mmgrpc-server-springboot
 
 ```
 
@@ -43,7 +43,7 @@ docker run --rm --log-driver=loki \
 --log-opt loki-url="https://${LOKI_USERNAME}:${LOKI_PASSWORD}@logs-prod3.grafana.net/loki/api/v1/push" \
 --log-opt loki-retries=5 \
 --log-opt loki-batch-size=400 \
---name  mmgrpcserver-springboot \
+--name  mmgrpc-server-springboot \
 --add-host=host.docker.internal:host-gateway\
 -p6565:6565 -p8080:8080 \
 -eJAVA_OPTS='-javaagent:aws-opentelemetry-agent.jar \
@@ -54,7 +54,7 @@ docker run --rm --log-driver=loki \
 -eOTEL_PROPAGATORS=b3multi \
 -eAPP_SECURITY_CLIENT_ID=${APP_SECURITY_CLIENT_ID} \
 -eAPP_SECURITY_CLIENT_SECRET=${APP_SECURITY_CLIENT_SECRET} \
-mmgrpcserver-springboot
+mmgrpc-server-springboot
 
 ```
 

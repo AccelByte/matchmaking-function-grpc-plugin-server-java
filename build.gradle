@@ -1,8 +1,8 @@
 plugins {
-	id 'org.springframework.boot' version '2.7.1'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id "io.github.lognet.grpc-spring-boot" version '4.8.1'
+	id 'io.spring.dependency-management' version '1.0.14.RELEASE'
 	id 'java'
-	id "io.github.lognet.grpc-spring-boot" version '4.8.0'
+	id 'org.springframework.boot' version '2.7.4'
 }
 
 group = 'com.example'
@@ -11,7 +11,6 @@ sourceCompatibility = '11'
 project.buildDir = 'target'
 
 repositories {
-	maven { url 'https://repo.spring.io/release' }
 	mavenCentral()
 	maven {
 		credentials {
@@ -20,32 +19,19 @@ repositories {
 		}
 		url 'https://nexus.tools.accelbyte.net/repository/maven-releases/'
 	}
-	maven {
-		url 'https://jitpack.io'
-	}
-	maven {
-		credentials {
-			username "$abNexusUsername"
-			password "$abNexusPassword"
-		}
-		url 'https://nexus.tools.accelbyte.net/repository/maven-snapshots/'
-	}
 }
 
 dependencies {
-	annotationProcessor 'org.projectlombok:lombok'
-	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	annotationProcessor 'org.projectlombok:lombok:1.18.24'
+	implementation 'com.google.code.gson:gson:2.9.1'
+	implementation 'com.google.guava:guava:30.0-jre'
 	implementation 'net.accelbyte.platform.common:common-security:2.13.1'
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
 	implementation 'org.glassfish.jersey.core:jersey-client:2.26'
 	implementation 'org.glassfish.jersey.core:jersey-common:2.26'
 	implementation 'org.glassfish.jersey.ext:jersey-spring4:2.26'
-	implementation 'com.google.guava:guava:30.0-jre'
-	implementation 'com.google.code.gson:gson:2.9.1'
 	implementation 'org.springframework.boot:spring-boot-starter'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'io.micrometer:micrometer-registry-prometheus'
-	implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
@@ -70,4 +56,3 @@ bootRun {
 tasks.named('test') {
 	useJUnitPlatform()
 }
-

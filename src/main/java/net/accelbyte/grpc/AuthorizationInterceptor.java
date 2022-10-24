@@ -7,17 +7,12 @@ import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import lombok.extern.slf4j.Slf4j;
 import net.accelbyte.platform.exception.TokenIsExpiredException;
-import net.accelbyte.platform.exception.UnauthorizedException;
 import net.accelbyte.platform.security.OAuthToken;
 import net.accelbyte.platform.security.Permission;
 import net.accelbyte.platform.security.service.OAuthService;
 import org.lognet.springboot.grpc.GRpcGlobalInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
 @Slf4j
