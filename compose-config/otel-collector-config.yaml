@@ -15,10 +15,6 @@ exporters:
     endpoint: jaeger:14250
     tls:
       insecure: true
-  otlp/honeycomb:
-    endpoint: "api.honeycomb.io:443"
-    headers:
-      "x-honeycomb-team": "${HONEYCOMB_API_KEY}"
   otlp/graphana-cloud:
     endpoint: "tempo-us-central1.grafana.net:443"
     headers:
@@ -63,7 +59,7 @@ service:
     traces:
       receivers: [zipkin]
       processors: [batch,tail_sampling]
-      exporters: [otlp/graphana-local,otlp/honeycomb,otlp/graphana-cloud,jaeger]
+      exporters: [otlp/graphana-local,otlp/graphana-cloud,jaeger]
     metrics:
       receivers: [prometheus]
       processors: [batch]

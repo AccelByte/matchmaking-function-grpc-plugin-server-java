@@ -27,7 +27,6 @@ services:
       - tempo
       - jaeger
     environment:
-
       - GRAPHANA_CLOUD_TRACES_BASIC_AUTH
       - GRAPHANA_CLOUD_METRICS_BASIC_AUTH
       - GRAPHANA_CLOUD_TRACES_SAMPLING_PERCENTAGE
