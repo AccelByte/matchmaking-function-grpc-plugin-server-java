@@ -15,8 +15,11 @@ services:
     command: ["--service-cluster", "envoyproxy", "--config-path", "/etc/envoy/envoy.yaml"]
     ports:
       - "10000:10000"
+      - "9901:9901"
     volumes:
       - ./compose-config/envoy.yaml:/etc/envoy/envoy.yaml
+      - ./compose-config/certs/device_cert.pem:/home/certs/device_cert.pem
+      - ./compose-config/certs/device_cert.key:/home/certs/device_cert.key
     extra_hosts:
       - host.docker.internal:host-gateway
 
