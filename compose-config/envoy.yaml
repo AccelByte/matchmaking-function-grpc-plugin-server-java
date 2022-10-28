@@ -73,9 +73,9 @@ static_resources:
                   - h2,http/1.1
                 tls_certificates:
                   - certificate_chain:
-                      filename: /home/certs/device_cert.pem
+                      filename: /home/certs/server_cert.pem
                     private_key:
-                      filename: /home/certs/device_cert.key
+                      filename: /home/certs/server_cert.key
 
   clusters:
     - name: springboot_grpc_local
