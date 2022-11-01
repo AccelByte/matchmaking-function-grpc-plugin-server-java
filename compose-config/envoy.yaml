@@ -67,8 +67,11 @@ static_resources:
             name: envoy.transport_sockets.tls
             typed_config:
               "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
-              require_client_certificate: false
+              require_client_certificate: true
               common_tls_context:
+                validation_context:
+                  trusted_ca:
+                    filename: /home/certs/root_CA_cert.pem
                 alpn_protocols:
                   - h2,http/1.1
                 tls_certificates:
