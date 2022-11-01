@@ -68,3 +68,6 @@ docker-compose -f docker-compose-dependencies.yaml -f docker-compose-app.yaml up
 In local Grafana, localhost:3000
 add data source Tempo, URL http://tempo:3200
 add data source Loki, URL http://loki:3100
+
+### TLS
+All the certificates are in /compose-config/certs folder. There's also the private key used to create cert for SAN "localhost". It's only for demo purpose.

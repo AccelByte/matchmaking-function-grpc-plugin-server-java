@@ -63,6 +63,22 @@ static_resources:
                   - name: envoy.filters.http.router
                     typed_config:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+          transport_socket:
+            name: envoy.transport_sockets.tls
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
+              require_client_certificate: true
+              common_tls_context:
+                validation_context:
+                  trusted_ca:
+                    filename: /home/certs/root_CA_cert.pem
+                alpn_protocols:
+                  - h2,http/1.1
+                tls_certificates:
+                  - certificate_chain:
+                      filename: /home/certs/server_cert.pem
+                    private_key:
+                      filename: /home/certs/server_cert.key
 
   clusters:
     - name: springboot_grpc_local
@@ -95,3 +111,9 @@ static_resources:
                     socket_address:
                       address: host.docker.internal
                       port_value: 9411
+
+admin:
+  address:
+    socket_address:
+      address: 0.0.0.0
+      port_value: 9901
