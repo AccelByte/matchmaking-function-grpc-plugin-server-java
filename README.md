@@ -70,4 +70,5 @@ add data source Tempo, URL http://tempo:3200
 add data source Loki, URL http://loki:3100
 
 ### TLS
-All the certificates are in /compose-config/certs folder. There's also the private key used to create cert for SAN "localhost". It's only for demo purpose.
+There are 3 cert keys you can get from Lastpass. Folder name "Shared-customization-internal". Item name "cert-keys".
+Make sure you get the "server-cert.key" and put it in "./compose-config/certs" folder before running docker-compose for dependencies.
