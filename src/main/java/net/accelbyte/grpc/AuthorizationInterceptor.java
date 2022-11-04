@@ -6,10 +6,7 @@ import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import lombok.extern.slf4j.Slf4j;
-import net.accelbyte.platform.exception.TokenIsExpiredException;
-import net.accelbyte.platform.security.OAuthToken;
-import net.accelbyte.platform.security.Permission;
-import net.accelbyte.platform.security.service.OAuthService;
+import net.accelbyte.matchmaking.matchfunction.ABAuthorizationProvider;
 import org.lognet.springboot.grpc.GRpcGlobalInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,41 +20,50 @@ public class AuthorizationInterceptor implements ServerInterceptor {
     @Value("${justice.grpc.interceptor.auth.enabled:true}")
     private boolean enabled;
 
+    private ABAuthorizationProvider authProvider;
     private String namespace;
-
-    private OAuthService oAuthService;
-
-    private Permission requiredPermission;
+    private String resource;
 
     @Autowired
-    public AuthorizationInterceptor(OAuthService oAuthService, @Value("${app.config.resource_name}") String resourceName, @Value("${app.config.namespace}") String namespace) {
-        this.oAuthService = oAuthService;
-        this.requiredPermission = new Permission("NAMESPACE:" + namespace + ":" + resourceName, 2);
+    public AuthorizationInterceptor(ABAuthorizationProvider authProvider, @Value("${app.config.resource_name}") String resource,
+            @Value("${app.config.namespace}") String namespace) {
+        this.authProvider = authProvider;
         this.namespace = namespace;
+        this.resource = resource;
         log.info("AuthorizationInterceptor initialized");
     }
 
     @Override
-    public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
-        if(enabled) {
-            final String auth_token = headers.get(Metadata.Key.of("authorization", Metadata.ASCII_STRING_MARSHALLER));
-
-            if (auth_token != null) {
-                try {
-                    String token = auth_token.split(" ")[1];
-                    OAuthToken oAuthToken = oAuthService.getOAuthToken(token);
-                    if(oAuthToken == null || !oAuthService.validateTokenPermission(oAuthToken, requiredPermission, namespace, null)) {
-                        unAuthorizedCall(call, headers);
-                    }
-                } catch (TokenIsExpiredException e) {
-                    log.warn("Caught TokenIsExpiredException, throw unauthorized exception");
-                    unAuthorizedCall(call, headers);
-                }
-            } else {
-                unAuthorizedCall(call, headers);
-            }
+    public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers,
+            ServerCallHandler<ReqT, RespT> next) {
+        if (!enabled) {
+            return next.startCall(call, headers);
         }
-         return next.startCall(call, headers);
+
+        try {
+            final String authHeader = headers.get(Metadata.Key.of("authorization", Metadata.ASCII_STRING_MARSHALLER));
+
+            if (authHeader == null) {
+                throw new Exception("Auth header is null");
+            }
+
+            final String[] authTypeToken = authHeader.split(" ");
+
+            if (authTypeToken.length != 2) {
+                throw new Exception("Invalid auth header format");
+            }
+
+            final String authToken = authTypeToken[1];
+            
+            if (!authProvider.validate(authToken, "NAMESPACE:" + this.namespace + ":" + this.resource, 2)) {
+                throw new Exception("Auth token validation failed");
+            }
+        } catch (Exception e) {
+            log.error("Authorization error", e);
+            unAuthorizedCall(call, headers);
+        }
+
+        return next.startCall(call, headers);
     }
 
     private <ReqT, RespT> void unAuthorizedCall(ServerCall<ReqT, RespT> call, Metadata headers) {
