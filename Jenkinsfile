@@ -63,9 +63,6 @@ pipeline {
       agent {
         label "justice-codegen-sdk"
       }
-      environment {
-        AB_NEXUS = credentials('nexus-accelbyte-user')
-      }
       steps {
         sh "make build"
       }
