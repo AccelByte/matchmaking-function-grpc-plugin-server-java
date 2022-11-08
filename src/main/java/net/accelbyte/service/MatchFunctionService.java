@@ -1,4 +1,4 @@
-package net.accelbyte.matchmaking.matchfunction;
+package net.accelbyte.service;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,6 +13,7 @@ import net.accelbyte.matchmaking.matchfunction.grpc.StatCodesResponse;
 import net.accelbyte.matchmaking.matchfunction.grpc.Ticket;
 import net.accelbyte.matchmaking.matchfunction.grpc.ValidateTicketRequest;
 import net.accelbyte.matchmaking.matchfunction.grpc.ValidateTicketResponse;
+import net.accelbyte.object.RuleObject;
 import io.grpc.stub.StreamObserver;
 import org.lognet.springboot.grpc.GRpcService;
 

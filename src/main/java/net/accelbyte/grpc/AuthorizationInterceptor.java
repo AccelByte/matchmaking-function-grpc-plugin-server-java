@@ -6,7 +6,8 @@ import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import lombok.extern.slf4j.Slf4j;
-import net.accelbyte.matchmaking.matchfunction.ABAuthorizationProvider;
+import net.accelbyte.util.ABAuthorizationProvider;
+
 import org.lognet.springboot.grpc.GRpcGlobalInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

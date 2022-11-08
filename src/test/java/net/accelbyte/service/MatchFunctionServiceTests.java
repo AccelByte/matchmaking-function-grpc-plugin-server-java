@@ -1,4 +1,4 @@
-package net.accelbyte.matchmaking.matchfunction;
+package net.accelbyte.service;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -13,6 +13,7 @@ import net.accelbyte.matchmaking.matchfunction.grpc.StatCodesResponse;
 import net.accelbyte.matchmaking.matchfunction.grpc.Ticket;
 import net.accelbyte.matchmaking.matchfunction.grpc.ValidateTicketRequest;
 import net.accelbyte.matchmaking.matchfunction.grpc.ValidateTicketResponse;
+import net.accelbyte.util.ABAuthorizationProvider;
 import io.grpc.stub.MetadataUtils;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 @Slf4j
 @ActiveProfiles("test")
 @SpringBootTest(properties = "grpc.port=0")
-class MatchFunctionServiceTest {
+class MatchFunctionServiceTests {
     private ManagedChannel channel;
 
     private final Metadata header = new Metadata();

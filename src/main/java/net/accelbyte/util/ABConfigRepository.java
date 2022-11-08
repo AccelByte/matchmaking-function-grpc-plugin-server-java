@@ -1,4 +1,4 @@
-package net.accelbyte.matchmaking.matchfunction;
+package net.accelbyte.util;
 
 import net.accelbyte.sdk.core.repository.DefaultConfigRepository;
 

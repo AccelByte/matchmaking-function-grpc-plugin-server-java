@@ -1,4 +1,4 @@
-package net.accelbyte.matchmaking.matchfunction;
+package net.accelbyte.util;
 
 import java.math.BigInteger;
 import java.security.KeyFactory;

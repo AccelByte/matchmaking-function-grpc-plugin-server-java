@@ -1,7 +1,9 @@
-package net.accelbyte.matchmaking.matchfunction;
+package net.accelbyte;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import net.accelbyte.util.ABAuthorizationProvider;
 
 @Configuration
 public class ApplicationConfiguration {

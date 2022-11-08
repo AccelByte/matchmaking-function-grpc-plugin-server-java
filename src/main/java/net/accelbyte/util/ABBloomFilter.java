@@ -1,4 +1,4 @@
-package net.accelbyte.matchmaking.matchfunction;
+package net.accelbyte.util;
 
 import com.google.common.base.Charsets;
 import com.google.common.hash.Funnel;

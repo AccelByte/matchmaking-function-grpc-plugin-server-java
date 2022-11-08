@@ -1,4 +1,4 @@
-package net.accelbyte.matchmaking.matchfunction;
+package net.accelbyte.object;
 
 public class RuleObject {
     private int shipCountMin;
