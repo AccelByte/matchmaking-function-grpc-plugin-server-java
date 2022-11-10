@@ -2,40 +2,6 @@ app:
   config:
     namespace: ${NAMESPACE:accelbyte}
     resource_name: 'MMV2GRPCSERVICE'
-  security:
-    client_id: 123
-    client_secret: abc
-    iam_server_url: 'https://demo.accelbyte.io/iam'
-    token:
-      from:
-        cookie:
-          enabled: true
-    strict:
-      referer:
-        header:
-          validation: false
-    varied:
-      user:
-        id:
-          cross:
-            namespace: true
-    cache:
-      refresh:
-        jwk: '240'
-        revocation: '240'
-        role: '240'
-        client_info: '240'
-        client_token: '1800'
-      expires:
-        jwk: '600'
-        revocation: '600'
-        role: '600'
-        client_info: '600'
-        client_token: '3600'
-    trust_always: false
-justice:
-  publisher:
-    namespace: accelbyte
 
 grpc:
   enable-reflection: true
