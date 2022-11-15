@@ -7,5 +7,5 @@ SHELL := /bin/bash
 .PHONY: build
 
 build:
-	docker run -t --rm -u $$(id -u):$$(id -g) -v $$(pwd):/data/ -w /data/ -e GRADLE_USER_HOME=/data/.gradle gradle:7.5.1-jdk11 \
+	docker run -t --rm -u $$(id -u):$$(id -g) -v $$(pwd):/data/ -w /data/ -e GRADLE_USER_HOME=/data/.gradle gradle:7.5.1-jdk17 \
 			gradle --console=plain -i --no-daemon build
