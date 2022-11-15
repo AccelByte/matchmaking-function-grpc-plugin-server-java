@@ -8,9 +8,16 @@ grpc:
 
 management:
   endpoints:
+    enabled-by-default: false
     web:
+      base-path: "/"
       exposure:
-        include: "*"
+        include: "prometheus"
+      path-mapping:
+        prometheus: "metrics"
+  endpoint:
+    prometheus:
+      enabled: true
 
 spring:
   main:
