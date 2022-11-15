@@ -1,43 +1,63 @@
-## Build docker image locally
-```
-docker build -t mmgrpc-server-springboot .
-```
-To validate if a multiarch image can be built and then use the current platform image locally, try this:
-```
-docker buildx create --name mybuilder --use
-docker buildx build -t mmgrpc-server-springboot --platform linux/arm64/v8,linux/amd64 .
-docker buildx build -t mmgrpc-server-springboot --load .
-docker buildx rm mybuilder
-```
+# plugin-arch-grpc-server-java
 
+> :warning: **If you are new to AccelByte Cloud Service Customization gRPC Plugin Architecture**: Start reading from `OVERVIEW.md` in `plugin-arch-grpc-dependencies` repository to get the full context.
 
-## To run the dependencies only
-Copy .env.local to a new file called .env and get credentials from LassPass.
-```
-docker-compose -f docker-compose-dependencies.yaml up
-```
+Justice service customization using gRPC plugin architecture - Server (Java).
 
-## To run docker image version locally with fluentd driver
-```
-docker run --rm --log-driver=fluentd --log-opt tag=docker --log-opt fluentd-address=localhost:24225 \
---name  mmgrpc-server-springboot \
---add-host=host.docker.internal:host-gateway\
--p6565:6565 -p8080:8080 \
--eJAVA_OPTS='-javaagent:aws-opentelemetry-agent.jar' \
--eOTEL_EXPORTER_ZIPKIN_ENDPOINT=http://host.docker.internal:9411/api/v2/spans \
--eOTEL_TRACES_EXPORTER=zipkin \
--eOTEL_METRICS_EXPORTER=none \
--eOTEL_SERVICE_NAME=CustomMatchMakingFunctionJavaDocker \
--eOTEL_PROPAGATORS=b3multi \
--eAPP_SECURITY_CLIENT_ID=${APP_SECURITY_CLIENT_ID} \
--eAPP_SECURITY_CLIENT_SECRET=${APP_SECURITY_CLIENT_SECRET} \
-mmgrpc-server-springboot
+## Prerequisites
+
+Windows 10 WSL2 or Linux Ubuntu 20.04 with the following tools installed.
+
+- bash
+- docker
+- docker-compose
+- make
+- jdk 17
+
+## Setup
+
+1. Create a docker compose `.env` file based on `.env.template` file. 
+2. Fill in the required environment variables in `.env` file.
+
+## Building
+
+Build the project and create a docker image for the current platform in one go.
 
 ```
+make build image
+```
 
-## To run docker image version locally with loki driver
+For more details about the command, see [Makefile](Makefile).
 
-Need to install loki plugin first: ```docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions```
+## Running
+
+Use the following command to run the project.
+
+```
+docker-compose up
+```
+
+## Advanced
+
+### Building Multi-Arch Docker Image
+
+Build the project and create a multi-arch docker image in one go.
+
+```
+make build imagex
+```
+
+For more details about the command, see [Makefile](Makefile).
+
+### Running Docker Image Version Locally with Loki Driver
+
+Install Loki Docker plugin.
+
+```
+docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
+```
+Then, use the following command.
+
 ```
 docker run --rm --log-driver=loki \
 --log-opt loki-url="https://${LOKI_USERNAME}:${LOKI_PASSWORD}@logs-prod3.grafana.net/loki/api/v1/push" \
@@ -55,20 +75,4 @@ docker run --rm --log-driver=loki \
 -eAPP_SECURITY_CLIENT_ID=${APP_SECURITY_CLIENT_ID} \
 -eAPP_SECURITY_CLIENT_SECRET=${APP_SECURITY_CLIENT_SECRET} \
 mmgrpc-server-springboot
-
 ```
-
-
-## To run the app with with fluent driver its dependencies in one docker-compose command
-```
-docker-compose -f docker-compose-dependencies.yaml -f docker-compose-app.yaml up
-```
-
-### Configure local Grafana, Tempo, Loki
-In local Grafana, localhost:3000
-add data source Tempo, URL http://tempo:3200
-add data source Loki, URL http://loki:3100
-
-### TLS
-There are 3 cert keys you can get from Lastpass. Folder name "Shared-customization-internal". Item name "cert-keys".
-Make sure you get the "server-cert.key" and put it in "./compose-config/certs" folder before running docker-compose for dependencies.
