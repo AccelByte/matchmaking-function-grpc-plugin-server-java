@@ -6,18 +6,38 @@ Justice service customization using gRPC plugin architecture - Server (Java).
 
 ## Prerequisites
 
-Windows 10 WSL2 or Linux Ubuntu 20.04 with the following tools installed.
+1. Windows 10 WSL2 or Linux Ubuntu 20.04 with the following tools installed.
 
-- bash
-- docker
-- docker-compose
-- make
-- jdk 17
+    a. bash
+
+    b. docker
+
+    c. docker-compose
+
+    d. make
+
+    e. jdk 17
+
+2. AccelByte Cloud demo environment.
+
+    a. Base URL: https://demo.accelbyte.io.
+
+    b. [Create a Game Namespace](https://docs.accelbyte.io/esg/uam/namespaces.html#tutorials) if you don't have one yet. Keep the `Namespace ID`.
+
+    c. [Create an OAuth Client](https://docs.accelbyte.io/guides/access/iam-client.html) with confidential client type and give it `read` permission to resource `NAMESPACE:{namespace}:MMV2GRPCSERVICE`. Keep the `Client ID` and `Client Secret`.
 
 ## Setup
 
-1. Create a docker compose `.env` file based on `.env.template` file. 
-2. Fill in the required environment variables in `.env` file.
+Create a docker compose `.env` file based on `.env.template` file and fill in the required environment variables in `.env` file.
+
+```
+APP_BASE_URL=https://demo.accelbyte.io      # Base URL
+APP_SECURITY_CLIENT_ID=xxxxxxxxxx           # Client ID
+APP_SECURITY_CLIENT_SECRET=xxxxxxxxxx       # Client Secret
+NAMESPACE=xxxxxxxxxx                        # Namespace ID
+```
+
+> :exclamation: **For the server and client**: Use the same Base URL, Client ID, Client Secret, and Namespace ID.
 
 ## Building
 
