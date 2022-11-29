@@ -83,7 +83,7 @@ docker run --rm --log-driver=loki \
 --log-opt loki-url="https://${LOKI_USERNAME}:${LOKI_PASSWORD}@logs-prod3.grafana.net/loki/api/v1/push" \
 --log-opt loki-retries=5 \
 --log-opt loki-batch-size=400 \
---name  mmgrpc-server-springboot \
+--name  plugin-arch-grpc-server-java-app \
 --add-host=host.docker.internal:host-gateway\
 -p6565:6565 -p8080:8080 \
 -eJAVA_OPTS='-javaagent:aws-opentelemetry-agent.jar \
@@ -94,5 +94,5 @@ docker run --rm --log-driver=loki \
 -eOTEL_PROPAGATORS=b3multi \
 -eAPP_SECURITY_CLIENT_ID=${APP_SECURITY_CLIENT_ID} \
 -eAPP_SECURITY_CLIENT_SECRET=${APP_SECURITY_CLIENT_SECRET} \
-mmgrpc-server-springboot
+plugin-arch-grpc-server-java-app
 ```
