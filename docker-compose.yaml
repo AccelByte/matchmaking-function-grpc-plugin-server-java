@@ -10,7 +10,6 @@ services:
       - "6565:6565"
       - "8080:8080"
     environment:
-      - JAVA_OPTS=-javaagent:aws-opentelemetry-agent.jar
       - OTEL_EXPORTER_ZIPKIN_ENDPOINT=http://host.docker.internal:9411/api/v2/spans
       - OTEL_TRACES_EXPORTER=zipkin
       - OTEL_METRICS_EXPORTER=none
@@ -19,8 +18,6 @@ services:
       - APP_BASE_URL
       - APP_SECURITY_CLIENT_ID
       - APP_SECURITY_CLIENT_SECRET
-#    depends_on:
-#      - fluentd
     logging:
       driver: fluentd
       options:
