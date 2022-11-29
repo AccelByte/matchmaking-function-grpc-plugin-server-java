@@ -5,7 +5,9 @@
 version: '3'
 services:
   app:
-    image: plugin-arch-grpc-server-java-app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "6565:6565"
       - "8080:8080"
