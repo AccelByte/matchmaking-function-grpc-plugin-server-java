@@ -13,7 +13,7 @@ services:
       - OTEL_EXPORTER_ZIPKIN_ENDPOINT=http://host.docker.internal:9411/api/v2/spans
       - OTEL_TRACES_EXPORTER=zipkin
       - OTEL_METRICS_EXPORTER=none
-      - OTEL_SERVICE_NAME=CustomMatchMakingFunctionJavaDocker
+      - OTEL_SERVICE_NAME=CustomMatchmakingFunctionServerJava
       - OTEL_PROPAGATORS=b3multi
       - APP_BASE_URL
       - APP_SECURITY_CLIENT_ID
