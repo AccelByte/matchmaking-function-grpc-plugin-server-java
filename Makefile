@@ -17,7 +17,7 @@ build:
 			gradle --console=plain -i --no-daemon build
 
 image:
-	docker buildx build -t ${IMAGE_NAME} .
+	docker buildx build -t ${IMAGE_NAME} --load .
 
 imagex:
 	docker buildx inspect ${IMAGE_NAME}-builder \
