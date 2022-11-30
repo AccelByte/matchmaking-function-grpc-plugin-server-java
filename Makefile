@@ -2,7 +2,7 @@
 # This is licensed software from AccelByte Inc, for limitations
 # and restrictions contact your company contract manager.
 
-IMAGE_NAME := mmgrpc-server-springboot
+IMAGE_NAME := plugin-arch-grpc-server-java-app
 
 SHELL := /bin/bash
 
@@ -17,10 +17,11 @@ build:
 			gradle --console=plain -i --no-daemon build
 
 image:
-	docker build -t ${IMAGE_NAME} .
+	docker buildx build -t ${IMAGE_NAME} .
 
 imagex:
-	trap "docker buildx rm ${IMAGE_NAME}-builder" EXIT \
-			&& docker buildx create --name ${IMAGE_NAME}-builder --use \
-			&& docker buildx build -t ${IMAGE_NAME} --platform linux/arm64/v8,linux/amd64 . \
-			&& docker buildx build -t ${IMAGE_NAME} --load .
+	docker buildx inspect ${IMAGE_NAME}-builder \
+			|| docker buildx create --name ${IMAGE_NAME}-builder --use 
+	docker buildx build -t ${IMAGE_NAME} --platform linux/arm64/v8,linux/amd64 .
+	docker buildx build -t ${IMAGE_NAME} --load .
+	#docker buildx rm ${IMAGE_NAME}-builder
