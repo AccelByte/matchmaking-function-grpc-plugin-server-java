@@ -31,10 +31,10 @@ Justice service customization using gRPC plugin architecture - Server (Java).
 Create a docker compose `.env` file based on `.env.template` file and fill in the required environment variables in `.env` file.
 
 ```
-APP_BASE_URL=https://demo.accelbyte.io      # Base URL
-APP_SECURITY_CLIENT_ID=xxxxxxxxxx           # Client ID
-APP_SECURITY_CLIENT_SECRET=xxxxxxxxxx       # Client Secret
-NAMESPACE=xxxxxxxxxx                        # Namespace ID
+AB_BASE_URL=https://demo.accelbyte.io   # Base URL
+AB_CLIENT_ID=xxxxxxxxxx                 # Client ID
+AB_CLIENT_SECRET=xxxxxxxxxx             # Client Secret
+AB_NAMESPACE=xxxxxxxxxx                 # Namespace ID
 ```
 
 > :exclamation: **For the server and client**: Use the same Base URL, Client ID, Client Secret, and Namespace ID.
@@ -106,7 +106,7 @@ docker run --rm --log-driver=loki \
 -eOTEL_METRICS_EXPORTER=none \
 -eOTEL_SERVICE_NAME=CustomMatchMakingFunctionJavaDocker \
 -eOTEL_PROPAGATORS=b3multi \
--eAPP_SECURITY_CLIENT_ID=${APP_SECURITY_CLIENT_ID} \
--eAPP_SECURITY_CLIENT_SECRET=${APP_SECURITY_CLIENT_SECRET} \
+-eAB_CLIENT_ID=${AB_CLIENT_ID} \
+-eAB_CLIENT_SECRET=${AB_CLIENT_SECRET} \
 plugin-arch-grpc-server-java-app
 ```

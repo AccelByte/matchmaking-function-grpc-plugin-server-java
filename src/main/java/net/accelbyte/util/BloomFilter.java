@@ -5,7 +5,7 @@ import com.google.common.hash.Funnel;
 import com.google.common.hash.Hashing;
 import com.google.common.primitives.Longs;
 
-public class ABBloomFilter {
+public class BloomFilter {
     public boolean mightContain(
             String object,
             int numHashFunctions,

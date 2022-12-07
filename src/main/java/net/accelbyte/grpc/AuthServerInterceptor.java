@@ -6,7 +6,7 @@ import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import lombok.extern.slf4j.Slf4j;
-import net.accelbyte.util.ABAuthorizationProvider;
+import net.accelbyte.util.ServerAuthProvider;
 
 import org.lognet.springboot.grpc.GRpcGlobalInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,22 +16,23 @@ import org.springframework.core.annotation.Order;
 @Slf4j
 @GRpcGlobalInterceptor
 @Order(20)
-public class AuthorizationInterceptor implements ServerInterceptor {
+public class AuthServerInterceptor implements ServerInterceptor {
 
-    @Value("${justice.grpc.interceptor.auth.enabled:true}")
+    @Value("${plugin.grpc.server.interceptor.auth.enabled:true}")
     private boolean enabled;
 
-    private ABAuthorizationProvider authProvider;
+    private ServerAuthProvider authProvider;
     private String namespace;
     private String resource;
 
     @Autowired
-    public AuthorizationInterceptor(ABAuthorizationProvider authProvider, @Value("${app.config.resource_name}") String resource,
-            @Value("${app.config.namespace}") String namespace) {
+    public AuthServerInterceptor(ServerAuthProvider authProvider, @Value("${plugin.grpc.config.resource_name}") String resource,
+            @Value("${plugin.grpc.config.namespace}") String namespace) {
         this.authProvider = authProvider;
         this.namespace = namespace;
         this.resource = resource;
-        log.info("AuthorizationInterceptor initialized");
+
+        log.info("AuthServerInterceptor initialized");
     }
 
     @Override
@@ -68,6 +69,6 @@ public class AuthorizationInterceptor implements ServerInterceptor {
     }
 
     private <ReqT, RespT> void unAuthorizedCall(ServerCall<ReqT, RespT> call, Metadata headers) {
-        call.close(Status.UNAUTHENTICATED.withDescription("call not authorized"), headers);
+        call.close(Status.UNAUTHENTICATED.withDescription("Call not authorized"), headers);
     }
 }

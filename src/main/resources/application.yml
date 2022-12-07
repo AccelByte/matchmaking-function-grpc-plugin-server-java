@@ -1,7 +1,14 @@
-app:
-  config:
-    namespace: ${NAMESPACE:accelbyte}
-    resource_name: 'MMV2GRPCSERVICE'
+plugin:
+  grpc:
+    config:
+      namespace: ${AB_NAMESPACE:accelbyte}
+      resource_name: 'MMV2GRPCSERVICE'
+    server:
+      interceptor:
+        debug-logger:
+          enabled: false
+        auth:
+          enabled: true
 
 grpc:
   enable-reflection: true

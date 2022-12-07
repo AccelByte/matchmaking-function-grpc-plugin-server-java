@@ -33,10 +33,11 @@ import net.accelbyte.sdk.api.iam.wrappers.OAuth20;
 import net.accelbyte.sdk.core.AccelByteConfig;
 import net.accelbyte.sdk.core.AccelByteSDK;
 import net.accelbyte.sdk.core.client.OkhttpClient;
+import net.accelbyte.sdk.core.repository.DefaultConfigRepository;
 import net.accelbyte.sdk.core.repository.DefaultTokenRepository;
 
 @Slf4j
-public class ABAuthorizationProvider {
+public class ServerAuthProvider {
 
     private static String DEFAULT_CACHE_KEY = "default";
 
@@ -44,22 +45,24 @@ public class ABAuthorizationProvider {
     private static String PERMISSION_RESOURCE = "Resource";
     private static String PERMISSION_ACTION = "Action";
 
+    private static final DefaultTokenRepository defaultTokenRepository = new DefaultTokenRepository();
+
     private AccelByteSDK sdk;
     private OAuth20 oauthWrapper;
-    private ABBloomFilter bloomFilter;
+    private BloomFilter bloomFilter;
 
     private LoadingCache<String, Map<String, RSAPublicKey>> jwksCache;
     private LoadingCache<String, OauthapiRevocationList> revocationListCache;
 
-    public ABAuthorizationProvider() {
+    public ServerAuthProvider() {
         final AccelByteConfig config = new AccelByteConfig(
                 new OkhttpClient(),
-                DefaultTokenRepository.getInstance(),
-                new ABConfigRepository());
+                defaultTokenRepository,
+                new DefaultConfigRepository());
 
         this.sdk = new AccelByteSDK(config);
         this.oauthWrapper = new OAuth20(sdk);
-        this.bloomFilter = new ABBloomFilter();
+        this.bloomFilter = new BloomFilter();
 
         this.jwksCache = buildJWKSLoadingCache();
         this.revocationListCache = buildRevocationListLoadingCache();

@@ -13,7 +13,7 @@ import org.springframework.core.annotation.Order;
 @Slf4j
 @GRpcGlobalInterceptor
 @Order(10)
-public class ExceptionHandlingInterceptor implements ServerInterceptor {
+public class ExceptionServerInterceptor implements ServerInterceptor {
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers, ServerCallHandler<ReqT, RespT> next) {
         ServerCall.Listener<ReqT> listener = next.startCall(call, headers);
