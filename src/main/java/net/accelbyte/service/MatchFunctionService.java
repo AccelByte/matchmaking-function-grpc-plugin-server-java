@@ -31,7 +31,7 @@ public class MatchFunctionService extends MatchFunctionGrpc.MatchFunctionImplBas
 
     @Override
     public void getStatCodes(GetStatCodesRequest request, StreamObserver<StatCodesResponse> responseObserver) {
-        log.info("received getStatCodes request.");
+        log.info("Received get stat codes request");
         StatCodesResponse response = StatCodesResponse.newBuilder().build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
@@ -39,7 +39,7 @@ public class MatchFunctionService extends MatchFunctionGrpc.MatchFunctionImplBas
 
     @Override
     public void validateTicket(ValidateTicketRequest request, StreamObserver<ValidateTicketResponse> responseObserver) {
-        log.info("received validateTicket request.");
+        log.info("Received validate ticket request");
         ValidateTicketResponse response = ValidateTicketResponse.newBuilder().setValid(true).build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
@@ -51,9 +51,9 @@ public class MatchFunctionService extends MatchFunctionGrpc.MatchFunctionImplBas
         return new StreamObserver<>() {
             @Override
             public void onNext(MakeMatchesRequest makeMatchesRequest) {
-                log.info("received make matches request.");
+                log.info("Received make matches request");
                 if (makeMatchesRequest.hasParameters()) {
-                    log.info("received parameters");
+                    log.info("Received parameters");
                     Rules rules = makeMatchesRequest.getParameters().getRules();
                     if (rules != null) {
                         final Gson gson = new Gson();
@@ -64,31 +64,31 @@ public class MatchFunctionService extends MatchFunctionGrpc.MatchFunctionImplBas
                                 && newShipCountMin <= newShipCountMax) {
                             MatchFunctionService.this.shipCountMin = newShipCountMin;
                             MatchFunctionService.this.shipCountMax = newShipCountMax;
-                            log.info("updated shipCountMin= " + MatchFunctionService.this.shipCountMin
+                            log.info("Updated shipCountMin= " + MatchFunctionService.this.shipCountMin
                                     + " and shipCountMax= " + MatchFunctionService.this.shipCountMax);
                         }
                     }
                 }
 
                 if (makeMatchesRequest.hasTicket()) {
-                    log.info("received ticket");
+                    log.info("Received ticket");
                     final Ticket newTicket = makeMatchesRequest.getTicket();
                     unmatchedTickets.add(newTicket);
                     if (unmatchedTickets.size() == shipCountMax) {
                         createAndPushMatchResultAndClearUnmatchedTickets(responseObserver);
                     }
-                    log.info("unmatched tickets size: " + unmatchedTickets.size());
+                    log.info("Unmatched tickets size: " + unmatchedTickets.size());
                 }
             }
 
             @Override
             public void onError(Throwable t) {
-                log.warn("makeMatches cancelled");
+                log.warn("Make matches cancelled");
             }
 
             @Override
             public void onCompleted() {
-                log.info("on complete. unmatched tickets size: " + unmatchedTickets.size());
+                log.info("Complete, unmatched tickets size: " + unmatchedTickets.size());
                 if (unmatchedTickets.size() >= shipCountMin) {
                     createAndPushMatchResultAndClearUnmatchedTickets(responseObserver);
                 }

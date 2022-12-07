@@ -31,7 +31,8 @@ public class AuthServerInterceptor implements ServerInterceptor {
         this.authProvider = authProvider;
         this.namespace = namespace;
         this.resource = resource;
-        log.info("AuthorizationInterceptor initialized");
+
+        log.info("AuthServerInterceptor initialized");
     }
 
     @Override
@@ -68,6 +69,6 @@ public class AuthServerInterceptor implements ServerInterceptor {
     }
 
     private <ReqT, RespT> void unAuthorizedCall(ServerCall<ReqT, RespT> call, Metadata headers) {
-        call.close(Status.UNAUTHENTICATED.withDescription("call not authorized"), headers);
+        call.close(Status.UNAUTHENTICATED.withDescription("Call not authorized"), headers);
     }
 }

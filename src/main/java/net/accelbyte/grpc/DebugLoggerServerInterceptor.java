@@ -3,7 +3,6 @@ package net.accelbyte.grpc;
 import io.grpc.ForwardingServerCall.SimpleForwardingServerCall;
 import io.grpc.ForwardingServerCallListener;
 import io.grpc.Metadata;
-import io.grpc.MethodDescriptor;
 import io.grpc.ServerCall;
 import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
@@ -14,39 +13,37 @@ import org.springframework.beans.factory.annotation.Value;
 @Slf4j
 @GRpcGlobalInterceptor
 public class DebugLoggerServerInterceptor implements ServerInterceptor {
-    private static final String REQUEST = "REQUEST";
-    private static final String RESPONSE = "RESPONSE";
-
     @Value("${plugin.grpc.server.interceptor.debug-logger.enabled:false}")
     private boolean enabled;
 
     public DebugLoggerServerInterceptor() {
-        log.info("LoggingServerInterceptor initialized");
+        log.info("DebugLoggerServerInterceptor initialized");
     }
 
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers,
-                                                                 ServerCallHandler<ReqT, RespT> next) {
-        if(enabled) {
-            logMethod(REQUEST, call.getMethodDescriptor());
-            logHeaders(REQUEST, headers);
+            ServerCallHandler<ReqT, RespT> next) {
+        if (enabled) {
+            log.info("Request path: {}", call.getMethodDescriptor().getFullMethodName());
+            log.info("Request headers: {}}", headers);
         }
+
         return new ForwardingServerCallListener.SimpleForwardingServerCallListener<ReqT>(
                 next.startCall(new SimpleForwardingServerCall<ReqT, RespT>(call) {
 
                     @Override
                     public void sendHeaders(Metadata responseHeaders) {
-                        if(enabled) {
-                            logMethod(RESPONSE, call.getMethodDescriptor());
-                            logHeaders(RESPONSE, responseHeaders);
+                        if (enabled) {
+                            log.info("Response path: {}", call.getMethodDescriptor().getFullMethodName());
+                            log.info("Response headers: {}}", responseHeaders);
                         }
                         super.sendHeaders(responseHeaders);
                     }
 
                     @Override
                     public void sendMessage(RespT message) {
-                        if(enabled) {
-                            logMessage(RESPONSE, message);
+                        if (enabled) {
+                            log.info("Response message: {}", message);
                         }
                         super.sendMessage(message);
                     }
@@ -54,36 +51,19 @@ public class DebugLoggerServerInterceptor implements ServerInterceptor {
 
             @Override
             public void onMessage(ReqT message) {
-                if(enabled) {
-                    logMessage(REQUEST, message);
+                if (enabled) {
+                    log.info("Request message: {}", message);
                 }
                 super.onMessage(message);
             }
 
             @Override
             public void onCancel() {
-                if(enabled) logCancellation(call.getMethodDescriptor());
+                if (enabled) {
+                    log.info("Call cancelled: ", call.getMethodDescriptor().getFullMethodName());
+                }
                 super.onCancel();
-
             }
-
         };
     }
-
-    private <ReqT, RespT> void logMethod(String type, MethodDescriptor<ReqT, RespT> method) {
-        log.info("{} PATH: {}", type, method.getFullMethodName());
-    }
-
-    private void logHeaders(String type, Metadata headers) {
-        log.info("{} HEADERS: {}}", type, headers);
-    }
-
-    private <T> void logMessage(String type, T message) {
-        log.info("{} MESSAGE: {}", type, message);
-    }
-
-    private <ReqT, RespT> void logCancellation(MethodDescriptor<ReqT, RespT> method) {
-        log.info("CALL CANCELLED for method {}", method.getFullMethodName());
-    }
-
 }
