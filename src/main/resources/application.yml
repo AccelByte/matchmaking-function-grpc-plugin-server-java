@@ -1,6 +1,6 @@
 app:
   config:
-    namespace: ${NAMESPACE:accelbyte}
+    namespace: ${AB_NAMESPACE:accelbyte}
     resource_name: 'MMV2GRPCSERVICE'
 
 grpc:

@@ -12,14 +12,15 @@ services:
       - "6565:6565"
       - "8080:8080"
     environment:
+      - AB_BASE_URL
+      - AB_CLIENT_ID
+      - AB_CLIENT_SECRET
+      - AB_NAMESPACE
       - OTEL_EXPORTER_ZIPKIN_ENDPOINT=http://host.docker.internal:9411/api/v2/spans
       - OTEL_TRACES_EXPORTER=zipkin
       - OTEL_METRICS_EXPORTER=none
       - OTEL_SERVICE_NAME=CustomMatchmakingFunctionServerJava
       - OTEL_PROPAGATORS=b3multi
-      - APP_BASE_URL
-      - APP_SECURITY_CLIENT_ID
-      - APP_SECURITY_CLIENT_SECRET
     logging:
       driver: fluentd
       options:

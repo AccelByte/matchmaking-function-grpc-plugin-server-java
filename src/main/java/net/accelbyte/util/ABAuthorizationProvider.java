@@ -33,6 +33,7 @@ import net.accelbyte.sdk.api.iam.wrappers.OAuth20;
 import net.accelbyte.sdk.core.AccelByteConfig;
 import net.accelbyte.sdk.core.AccelByteSDK;
 import net.accelbyte.sdk.core.client.OkhttpClient;
+import net.accelbyte.sdk.core.repository.DefaultConfigRepository;
 import net.accelbyte.sdk.core.repository.DefaultTokenRepository;
 
 @Slf4j
@@ -44,6 +45,8 @@ public class ABAuthorizationProvider {
     private static String PERMISSION_RESOURCE = "Resource";
     private static String PERMISSION_ACTION = "Action";
 
+    private static final DefaultTokenRepository defaultTokenRepository = new DefaultTokenRepository();
+
     private AccelByteSDK sdk;
     private OAuth20 oauthWrapper;
     private ABBloomFilter bloomFilter;
@@ -54,8 +57,8 @@ public class ABAuthorizationProvider {
     public ABAuthorizationProvider() {
         final AccelByteConfig config = new AccelByteConfig(
                 new OkhttpClient(),
-                DefaultTokenRepository.getInstance(),
-                new ABConfigRepository());
+                defaultTokenRepository,
+                new DefaultConfigRepository());
 
         this.sdk = new AccelByteSDK(config);
         this.oauthWrapper = new OAuth20(sdk);
