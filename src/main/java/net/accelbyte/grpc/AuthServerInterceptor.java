@@ -16,7 +16,7 @@ import org.springframework.core.annotation.Order;
 @Slf4j
 @GRpcGlobalInterceptor
 @Order(20)
-public class AuthorizationInterceptor implements ServerInterceptor {
+public class AuthServerInterceptor implements ServerInterceptor {
 
     @Value("${plugin.grpc.server.interceptor.auth.enabled:true}")
     private boolean enabled;
@@ -26,7 +26,7 @@ public class AuthorizationInterceptor implements ServerInterceptor {
     private String resource;
 
     @Autowired
-    public AuthorizationInterceptor(ServerAuthProvider authProvider, @Value("${plugin.grpc.config.resource_name}") String resource,
+    public AuthServerInterceptor(ServerAuthProvider authProvider, @Value("${plugin.grpc.config.resource_name}") String resource,
             @Value("${plugin.grpc.config.namespace}") String namespace) {
         this.authProvider = authProvider;
         this.namespace = namespace;

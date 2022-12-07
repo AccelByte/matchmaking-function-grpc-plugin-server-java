@@ -6,7 +6,7 @@ import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GrpcServerCallMetricFilter implements MeterFilter {
+public class GrpcServerCallMeterFilter implements MeterFilter {
     @Override
     public DistributionStatisticConfig configure(Meter.Id id, DistributionStatisticConfig config) {
         if (id.getName().equals("grpc.server.calls")) {
