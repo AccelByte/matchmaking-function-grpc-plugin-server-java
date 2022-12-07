@@ -13,7 +13,7 @@ import net.accelbyte.matchmaking.matchfunction.grpc.StatCodesResponse;
 import net.accelbyte.matchmaking.matchfunction.grpc.Ticket;
 import net.accelbyte.matchmaking.matchfunction.grpc.ValidateTicketRequest;
 import net.accelbyte.matchmaking.matchfunction.grpc.ValidateTicketResponse;
-import net.accelbyte.util.ABAuthorizationProvider;
+import net.accelbyte.util.ServerAuthProvider;
 import io.grpc.stub.MetadataUtils;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +48,7 @@ class MatchFunctionServiceTests {
     int port;
 
     @Autowired
-    ABAuthorizationProvider authProvider;
+    ServerAuthProvider authProvider;
 
     @BeforeEach
     private void init() {

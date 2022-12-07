@@ -37,7 +37,7 @@ import net.accelbyte.sdk.core.repository.DefaultConfigRepository;
 import net.accelbyte.sdk.core.repository.DefaultTokenRepository;
 
 @Slf4j
-public class ABAuthorizationProvider {
+public class ServerAuthProvider {
 
     private static String DEFAULT_CACHE_KEY = "default";
 
@@ -49,12 +49,12 @@ public class ABAuthorizationProvider {
 
     private AccelByteSDK sdk;
     private OAuth20 oauthWrapper;
-    private ABBloomFilter bloomFilter;
+    private BloomFilter bloomFilter;
 
     private LoadingCache<String, Map<String, RSAPublicKey>> jwksCache;
     private LoadingCache<String, OauthapiRevocationList> revocationListCache;
 
-    public ABAuthorizationProvider() {
+    public ServerAuthProvider() {
         final AccelByteConfig config = new AccelByteConfig(
                 new OkhttpClient(),
                 defaultTokenRepository,
@@ -62,7 +62,7 @@ public class ABAuthorizationProvider {
 
         this.sdk = new AccelByteSDK(config);
         this.oauthWrapper = new OAuth20(sdk);
-        this.bloomFilter = new ABBloomFilter();
+        this.bloomFilter = new BloomFilter();
 
         this.jwksCache = buildJWKSLoadingCache();
         this.revocationListCache = buildRevocationListLoadingCache();

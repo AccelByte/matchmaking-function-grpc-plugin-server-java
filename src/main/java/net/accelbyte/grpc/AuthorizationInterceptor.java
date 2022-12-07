@@ -6,7 +6,7 @@ import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import lombok.extern.slf4j.Slf4j;
-import net.accelbyte.util.ABAuthorizationProvider;
+import net.accelbyte.util.ServerAuthProvider;
 
 import org.lognet.springboot.grpc.GRpcGlobalInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +21,12 @@ public class AuthorizationInterceptor implements ServerInterceptor {
     @Value("${plugin.grpc.server.interceptor.auth.enabled:true}")
     private boolean enabled;
 
-    private ABAuthorizationProvider authProvider;
+    private ServerAuthProvider authProvider;
     private String namespace;
     private String resource;
 
     @Autowired
-    public AuthorizationInterceptor(ABAuthorizationProvider authProvider, @Value("${plugin.grpc.config.resource_name}") String resource,
+    public AuthorizationInterceptor(ServerAuthProvider authProvider, @Value("${plugin.grpc.config.resource_name}") String resource,
             @Value("${plugin.grpc.config.namespace}") String namespace) {
         this.authProvider = authProvider;
         this.namespace = namespace;
