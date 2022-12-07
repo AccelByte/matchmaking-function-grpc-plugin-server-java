@@ -17,7 +17,7 @@ public class DebugLoggerServerInterceptor implements ServerInterceptor {
     private static final String REQUEST = "REQUEST";
     private static final String RESPONSE = "RESPONSE";
 
-    @Value("${justice.grpc.interceptor.debug-logger.enabled:false}")
+    @Value("${plugin.grpc.server.interceptor.debug-logger.enabled:false}")
     private boolean enabled;
 
     public DebugLoggerServerInterceptor() {

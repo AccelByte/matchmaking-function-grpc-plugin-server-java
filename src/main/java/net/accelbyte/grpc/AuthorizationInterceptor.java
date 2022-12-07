@@ -18,7 +18,7 @@ import org.springframework.core.annotation.Order;
 @Order(20)
 public class AuthorizationInterceptor implements ServerInterceptor {
 
-    @Value("${justice.grpc.interceptor.auth.enabled:true}")
+    @Value("${plugin.grpc.server.interceptor.auth.enabled:true}")
     private boolean enabled;
 
     private ABAuthorizationProvider authProvider;
@@ -26,8 +26,8 @@ public class AuthorizationInterceptor implements ServerInterceptor {
     private String resource;
 
     @Autowired
-    public AuthorizationInterceptor(ABAuthorizationProvider authProvider, @Value("${app.config.resource_name}") String resource,
-            @Value("${app.config.namespace}") String namespace) {
+    public AuthorizationInterceptor(ABAuthorizationProvider authProvider, @Value("${plugin.grpc.config.resource_name}") String resource,
+            @Value("${plugin.grpc.config.namespace}") String namespace) {
         this.authProvider = authProvider;
         this.namespace = namespace;
         this.resource = resource;
