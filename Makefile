@@ -2,7 +2,7 @@
 # This is licensed software from AccelByte Inc, for limitations
 # and restrictions contact your company contract manager.
 
-IMAGE_NAME := plugin-arch-grpc-server-java-app
+IMAGE_NAME := $(shell basename "$$(pwd)")-app
 
 SHELL := /bin/bash
 
