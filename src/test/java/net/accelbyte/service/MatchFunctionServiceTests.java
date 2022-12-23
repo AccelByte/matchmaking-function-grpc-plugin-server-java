@@ -81,7 +81,7 @@ class MatchFunctionServiceTests {
                 .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
                 .validateTicket(ValidateTicketRequest.newBuilder().build());
 
-        assertTrue(validateTicketResponse.getValid());
+        assertTrue(validateTicketResponse.getValidTicket());
     }
 
     @Test
