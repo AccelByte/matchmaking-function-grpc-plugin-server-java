@@ -40,7 +40,7 @@ public class MatchFunctionService extends MatchFunctionGrpc.MatchFunctionImplBas
     @Override
     public void validateTicket(ValidateTicketRequest request, StreamObserver<ValidateTicketResponse> responseObserver) {
         log.info("Received validate ticket request");
-        ValidateTicketResponse response = ValidateTicketResponse.newBuilder().setValid(true).build();
+        ValidateTicketResponse response = ValidateTicketResponse.newBuilder().setValidTicket(true).build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
