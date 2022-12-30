@@ -1,8 +1,23 @@
 # matchmaking-function-grpc-plugin-server-java
 
-> :warning: **If you are new to AccelByte Cloud Service Customization gRPC Plugin Architecture**: Start reading from `OVERVIEW.md` in `grpc-plugin-dependencies` repository to get the full context.
+This repository contains `gRPC server` sample app (Java) for AccelByte Cloud service `matchmaking function` customization.
 
-Justice service customization using gRPC plugin architecture - Server (Java).
+The `gRPC server` is a part of AccelByte Cloud service customization gRPC plugin architecture.
+
+```mermaid
+flowchart LR
+   subgraph AB Cloud Service
+   CL[gRPC Client]
+   end
+   subgraph External Hosting
+   SV["gRPC Server\n(YOU ARE HERE)"]
+   DS[Dependency Services]
+   CL --- DS
+   end
+   DS --- SV
+```
+
+> :warning: **If you are new to AccelByte Cloud service customization gRPC plugin architecture**: You may want to read `OVERVIEW.md` in the `grpc-plugin-dependencies` repository to get the overview of the architecture.
 
 ## Prerequisites
 
@@ -10,11 +25,11 @@ Justice service customization using gRPC plugin architecture - Server (Java).
 
     a. bash
 
-    b. docker
+    b. make
 
-    c. docker-compose v2
+    c. docker
 
-    d. make
+    d. docker-compose v2
 
     e. jdk 17
 
@@ -24,17 +39,20 @@ Justice service customization using gRPC plugin architecture - Server (Java).
 
     b. [Create a Game Namespace](https://docs.accelbyte.io/esg/uam/namespaces.html#tutorials) if you don't have one yet. Keep the `Namespace ID`.
 
-    c. [Create an OAuth Client](https://docs.accelbyte.io/guides/access/iam-client.html) with confidential client type and give it `read` permission to resource `NAMESPACE:{namespace}:MMV2GRPCSERVICE`. Keep the `Client ID` and `Client Secret`.
+    c. [Create an OAuth Client](https://docs.accelbyte.io/guides/access/iam-client.html) with confidential client type with the following permission. Keep the `Client ID` and `Client Secret`.
+
+       - NAMESPACE:{namespace}:MMV2GRPCSERVICE - READ
 
 ## Setup
 
 Create a docker compose `.env` file based on `.env.template` file and fill in the required environment variables in `.env` file.
 
 ```
-AB_BASE_URL=https://demo.accelbyte.io   # Base URL
-AB_CLIENT_ID=xxxxxxxxxx                 # Client ID
-AB_CLIENT_SECRET=xxxxxxxxxx             # Client Secret
-AB_NAMESPACE=xxxxxxxxxx                 # Namespace ID
+AB_BASE_URL=https://demo.accelbyte.io      # Base URL
+AB_CLIENT_ID=xxxxxxxxxx                    # Client ID
+AB_CLIENT_SECRET=xxxxxxxxxx                # Client Secret
+AB_NAMESPACE=xxxxxxxxxx                    # Namespace ID
+PLUGIN_GRPC_SERVER_AUTH_ENABLED=false      # Enable or disable access token and permission check
 ```
 
 > :exclamation: **For the server and client**: Use the same Base URL, Client ID, Client Secret, and Namespace ID.
@@ -82,31 +100,3 @@ make imagex
 ```
 
 For more details about the command, see [Makefile](Makefile).
-
-### Running Docker Image Version Locally with Loki Driver
-
-Install Loki Docker plugin.
-
-```
-docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
-```
-Then, use the following command.
-
-```
-docker run --rm --log-driver=loki \
---log-opt loki-url="https://${LOKI_USERNAME}:${LOKI_PASSWORD}@logs-prod3.grafana.net/loki/api/v1/push" \
---log-opt loki-retries=5 \
---log-opt loki-batch-size=400 \
---name  plugin-arch-grpc-server-java-app \
---add-host=host.docker.internal:host-gateway\
--p6565:6565 -p8080:8080 \
--eJAVA_OPTS='-javaagent:aws-opentelemetry-agent.jar \
--eOTEL_EXPORTER_ZIPKIN_ENDPOINT=http://host.docker.internal:9411/api/v2/spans \
--eOTEL_TRACES_EXPORTER=zipkin \
--eOTEL_METRICS_EXPORTER=none \
--eOTEL_SERVICE_NAME=CustomMatchMakingFunctionJavaDocker \
--eOTEL_PROPAGATORS=b3multi \
--eAB_CLIENT_ID=${AB_CLIENT_ID} \
--eAB_CLIENT_SECRET=${AB_CLIENT_SECRET} \
-plugin-arch-grpc-server-java-app
-```
