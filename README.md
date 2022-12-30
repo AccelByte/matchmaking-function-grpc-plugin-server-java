@@ -83,31 +83,3 @@ make imagex
 ```
 
 For more details about the command, see [Makefile](Makefile).
-
-### Running Docker Image Version Locally with Loki Driver
-
-Install Loki Docker plugin.
-
-```
-docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
-```
-Then, use the following command.
-
-```
-docker run --rm --log-driver=loki \
---log-opt loki-url="https://${LOKI_USERNAME}:${LOKI_PASSWORD}@logs-prod3.grafana.net/loki/api/v1/push" \
---log-opt loki-retries=5 \
---log-opt loki-batch-size=400 \
---name  plugin-arch-grpc-server-java-app \
---add-host=host.docker.internal:host-gateway\
--p6565:6565 -p8080:8080 \
--eJAVA_OPTS='-javaagent:aws-opentelemetry-agent.jar \
--eOTEL_EXPORTER_ZIPKIN_ENDPOINT=http://host.docker.internal:9411/api/v2/spans \
--eOTEL_TRACES_EXPORTER=zipkin \
--eOTEL_METRICS_EXPORTER=none \
--eOTEL_SERVICE_NAME=CustomMatchMakingFunctionJavaDocker \
--eOTEL_PROPAGATORS=b3multi \
--eAB_CLIENT_ID=${AB_CLIENT_ID} \
--eAB_CLIENT_SECRET=${AB_CLIENT_SECRET} \
-plugin-arch-grpc-server-java-app
-```
