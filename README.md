@@ -1,8 +1,23 @@
 # matchmaking-function-grpc-plugin-server-java
 
-> :warning: **If you are new to AccelByte Cloud Service Customization gRPC Plugin Architecture**: Start reading from `OVERVIEW.md` in `grpc-plugin-dependencies` repository to get the full context.
+This repository contains `gRPC server` sample app (Java) for AccelByte Cloud service `matchmaking function` customization.
 
-Justice service customization using gRPC plugin architecture - Server (Java).
+The `gRPC server` is a part of AccelByte Cloud service customization gRPC plugin architecture.
+
+```mermaid
+flowchart LR
+   subgraph AB Cloud Service
+   CL[gRPC Client]
+   end
+   subgraph External Hosting
+   SV["gRPC Server\n(YOU ARE HERE)"]
+   DS[Dependency Services]
+   CL --- DS
+   end
+   DS --- SV
+```
+
+> :warning: **If you are new to AccelByte Cloud service customization gRPC plugin architecture**: You may want to read `OVERVIEW.md` in the `grpc-plugin-dependencies` repository to get the overview of the architecture.
 
 ## Prerequisites
 
@@ -10,11 +25,11 @@ Justice service customization using gRPC plugin architecture - Server (Java).
 
     a. bash
 
-    b. docker
+    b. make
 
-    c. docker-compose v2
+    c. docker
 
-    d. make
+    d. docker-compose v2
 
     e. jdk 17
 
@@ -24,7 +39,9 @@ Justice service customization using gRPC plugin architecture - Server (Java).
 
     b. [Create a Game Namespace](https://docs.accelbyte.io/esg/uam/namespaces.html#tutorials) if you don't have one yet. Keep the `Namespace ID`.
 
-    c. [Create an OAuth Client](https://docs.accelbyte.io/guides/access/iam-client.html) with confidential client type and give it `read` permission to resource `NAMESPACE:{namespace}:MMV2GRPCSERVICE`. Keep the `Client ID` and `Client Secret`.
+    c. [Create an OAuth Client](https://docs.accelbyte.io/guides/access/iam-client.html) with confidential client type with the following permission. Keep the `Client ID` and `Client Secret`.
+
+       - NAMESPACE:{namespace}:MMV2GRPCSERVICE - READ
 
 ## Setup
 
