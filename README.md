@@ -52,7 +52,7 @@ AB_BASE_URL=https://demo.accelbyte.io      # Base URL
 AB_CLIENT_ID=xxxxxxxxxx                    # Client ID
 AB_CLIENT_SECRET=xxxxxxxxxx                # Client Secret
 AB_NAMESPACE=xxxxxxxxxx                    # Namespace ID
-PLUGIN_GRPC_SERVER_AUTH_ENABLED=false      # Enable/disable permission authorization
+PLUGIN_GRPC_SERVER_AUTH_ENABLED=false      # Enable or disable access token and permission check
 ```
 
 > :exclamation: **For the server and client**: Use the same Base URL, Client ID, Client Secret, and Namespace ID.
