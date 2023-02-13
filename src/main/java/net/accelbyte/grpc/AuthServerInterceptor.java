@@ -6,7 +6,11 @@ import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import lombok.extern.slf4j.Slf4j;
-import net.accelbyte.util.ServerAuthProvider;
+import net.accelbyte.sdk.core.AccelByteConfig;
+import net.accelbyte.sdk.core.AccelByteSDK;
+import net.accelbyte.sdk.core.client.OkhttpClient;
+import net.accelbyte.sdk.core.repository.DefaultConfigRepository;
+import net.accelbyte.sdk.core.repository.DefaultTokenRepository;
 
 import org.lognet.springboot.grpc.GRpcGlobalInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +22,20 @@ import org.springframework.core.annotation.Order;
 @Order(20)
 public class AuthServerInterceptor implements ServerInterceptor {
 
-    @Value("${plugin.grpc.server.interceptor.auth.enabled:true}")
-    private boolean enabled;
+    private AccelByteSDK sdk;
 
-    private ServerAuthProvider authProvider;
     private String namespace;
+
     private String resource;
 
+    @Value("${plugin.grpc.server.interceptor.auth.enabled}")
+    private boolean enabled;
+
+
     @Autowired
-    public AuthServerInterceptor(ServerAuthProvider authProvider, @Value("${plugin.grpc.config.resource_name}") String resource,
+    public AuthServerInterceptor(AccelByteSDK sdk, @Value("${plugin.grpc.config.resource_name}") String resource,
             @Value("${plugin.grpc.config.namespace}") String namespace) {
-        this.authProvider = authProvider;
+        this.sdk = sdk;
         this.namespace = namespace;
         this.resource = resource;
 
@@ -56,8 +63,8 @@ public class AuthServerInterceptor implements ServerInterceptor {
             }
 
             final String authToken = authTypeToken[1];
-            
-            if (!authProvider.validate(authToken, "NAMESPACE:" + this.namespace + ":" + this.resource, 2)) {
+
+            if (!sdk.validateToken(authToken, String.format("NAMESPACE:%s:%s", this.namespace,  this.resource), 2)) {    // Action 2 - read only
                 throw new Exception("Auth token validation failed");
             }
         } catch (Exception e) {

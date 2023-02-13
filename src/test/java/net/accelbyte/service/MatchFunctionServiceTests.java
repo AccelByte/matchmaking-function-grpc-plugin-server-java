@@ -13,7 +13,7 @@ import net.accelbyte.matchmakingv2.matchfunction.StatCodesResponse;
 import net.accelbyte.matchmakingv2.matchfunction.Ticket;
 import net.accelbyte.matchmakingv2.matchfunction.ValidateTicketRequest;
 import net.accelbyte.matchmakingv2.matchfunction.ValidateTicketResponse;
-import net.accelbyte.util.ServerAuthProvider;
+import net.accelbyte.sdk.core.AccelByteSDK;
 import io.grpc.stub.MetadataUtils;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +48,7 @@ class MatchFunctionServiceTests {
     int port;
 
     @Autowired
-    ServerAuthProvider authProvider;
+    AccelByteSDK sdk;
 
     @BeforeEach
     private void init() {
@@ -62,8 +62,8 @@ class MatchFunctionServiceTests {
 
     @Test
     void getStatCodes() {
-        Mockito.reset(authProvider);
-        Mockito.when(authProvider.validate(any(), any(), anyInt())).thenReturn(true);
+        Mockito.reset(sdk);
+        Mockito.when(sdk.validateToken(any(), any(), anyInt())).thenReturn(true);
 
         final StatCodesResponse statCodesResponse = MatchFunctionGrpc.newBlockingStub(channel)
                 .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
@@ -74,8 +74,8 @@ class MatchFunctionServiceTests {
 
     @Test
     void validateTicket() {
-        Mockito.reset(authProvider);
-        Mockito.when(authProvider.validate(any(), any(), anyInt())).thenReturn(true);
+        Mockito.reset(sdk);
+        Mockito.when(sdk.validateToken(any(), any(), anyInt())).thenReturn(true);
 
         final ValidateTicketResponse validateTicketResponse = MatchFunctionGrpc.newBlockingStub(channel)
                 .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
@@ -86,8 +86,8 @@ class MatchFunctionServiceTests {
 
     @Test
     void makeMatches() throws InterruptedException {
-        Mockito.reset(authProvider);
-        Mockito.when(authProvider.validate(any(), any(), anyInt())).thenReturn(true);
+        Mockito.reset(sdk);
+        Mockito.when(sdk.validateToken(any(), any(), anyInt())).thenReturn(true);
 
         final MakeMatchesRequest makeMatchesRequest1 = MakeMatchesRequest.newBuilder()
                 .setTicket(Ticket.newBuilder()
@@ -143,8 +143,8 @@ class MatchFunctionServiceTests {
 
     @Test
     void failsAuthorization() {
-        Mockito.reset(authProvider);
-        Mockito.when(authProvider.validate(any(), any(), anyInt())).thenReturn(false);
+        Mockito.reset(sdk);
+        Mockito.when(sdk.validateToken(any(), any(), anyInt())).thenReturn(false);
 
         Assertions.assertThrows(StatusRuntimeException.class, () -> {
             MatchFunctionGrpc.newBlockingStub(channel)
