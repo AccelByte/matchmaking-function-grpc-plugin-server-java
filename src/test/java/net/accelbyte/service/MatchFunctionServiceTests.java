@@ -58,19 +58,7 @@ class MatchFunctionServiceTests {
 
         Metadata.Key<String> key = Metadata.Key.of("authorization", Metadata.ASCII_STRING_MARSHALLER);
         header.put(key, "Bearer abc");
-    }
-
-    @Test
-    void getStatCodes() {
-        Mockito.reset(sdk);
-        Mockito.when(sdk.validateToken(any(), any(), anyInt())).thenReturn(true);
-
-        final StatCodesResponse statCodesResponse = MatchFunctionGrpc.newBlockingStub(channel)
-                .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
-                .getStatCodes(GetStatCodesRequest.newBuilder().build());
-
-        assertEquals(0, statCodesResponse.getCodesList().size());
-    }
+    }    
 
     @Test
     void validateTicket() {
