@@ -1,14 +1,14 @@
-package net.accelbyte;
+package net.accelbyte.matchmaking.function.grpc.server;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ApplicationTests {
+class AppTest {
 
 	@Test
 	void contextLoads() {
-		
+
 	}
 
 }

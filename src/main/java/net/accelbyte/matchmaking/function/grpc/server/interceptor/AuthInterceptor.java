@@ -1,4 +1,4 @@
-package net.accelbyte.grpc;
+package net.accelbyte.matchmaking.function.grpc.server.interceptor;
 
 import io.grpc.Metadata;
 import io.grpc.ServerCall;
@@ -6,11 +6,7 @@ import io.grpc.ServerCallHandler;
 import io.grpc.ServerInterceptor;
 import io.grpc.Status;
 import lombok.extern.slf4j.Slf4j;
-import net.accelbyte.sdk.core.AccelByteConfig;
 import net.accelbyte.sdk.core.AccelByteSDK;
-import net.accelbyte.sdk.core.client.OkhttpClient;
-import net.accelbyte.sdk.core.repository.DefaultConfigRepository;
-import net.accelbyte.sdk.core.repository.DefaultTokenRepository;
 
 import org.lognet.springboot.grpc.GRpcGlobalInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,58 +16,45 @@ import org.springframework.core.annotation.Order;
 @Slf4j
 @GRpcGlobalInterceptor
 @Order(20)
-public class AuthServerInterceptor implements ServerInterceptor {
+public class AuthInterceptor implements ServerInterceptor {
+    private final int ACTION_READ_ONLY = 2;
 
     private AccelByteSDK sdk;
-
     private String namespace;
-
     private String resource;
-
     @Value("${plugin.grpc.server.interceptor.auth.enabled}")
     private boolean enabled;
 
-
     @Autowired
-    public AuthServerInterceptor(AccelByteSDK sdk, @Value("${plugin.grpc.config.resource_name}") String resource,
+    public AuthInterceptor(AccelByteSDK sdk, @Value("${plugin.grpc.config.resource_name}") String resource,
             @Value("${plugin.grpc.config.namespace}") String namespace) {
         this.sdk = sdk;
         this.namespace = namespace;
         this.resource = resource;
-
-        log.info("AuthServerInterceptor initialized");
+        log.info("AuthInterceptor enabled: {})", enabled);
     }
 
     @Override
     public <ReqT, RespT> ServerCall.Listener<ReqT> interceptCall(ServerCall<ReqT, RespT> call, Metadata headers,
             ServerCallHandler<ReqT, RespT> next) {
-        if (!enabled) {
-            return next.startCall(call, headers);
-        }
-
-        try {
+        if (enabled) {
             final String authHeader = headers.get(Metadata.Key.of("authorization", Metadata.ASCII_STRING_MARSHALLER));
-
             if (authHeader == null) {
-                throw new Exception("Auth header is null");
+                log.error("Auth header is null");
+                unAuthorizedCall(call, headers);
             }
-
             final String[] authTypeToken = authHeader.split(" ");
-
             if (authTypeToken.length != 2) {
-                throw new Exception("Invalid auth header format");
+                log.error("Auth header format is invalid");
+                unAuthorizedCall(call, headers);
             }
-
             final String authToken = authTypeToken[1];
-
-            if (!sdk.validateToken(authToken, String.format("NAMESPACE:%s:%s", this.namespace,  this.resource), 2)) {    // Action 2 - read only
-                throw new Exception("Auth token validation failed");
+            if (!sdk.validateToken(authToken, String.format("NAMESPACE:%s:%s", this.namespace, this.resource),
+                    ACTION_READ_ONLY)) {
+                log.error("Auth token validation failed");
+                unAuthorizedCall(call, headers);
             }
-        } catch (Exception e) {
-            log.error("Authorization error", e);
-            unAuthorizedCall(call, headers);
         }
-
         return next.startCall(call, headers);
     }
 

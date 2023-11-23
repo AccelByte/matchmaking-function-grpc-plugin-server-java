@@ -1,4 +1,4 @@
-package net.accelbyte.grpc;
+package net.accelbyte.matchmaking.function.grpc.server.interceptor;
 
 import io.grpc.ForwardingServerCall.SimpleForwardingServerCall;
 import io.grpc.ForwardingServerCallListener;
@@ -12,12 +12,13 @@ import org.springframework.beans.factory.annotation.Value;
 
 @Slf4j
 @GRpcGlobalInterceptor
-public class DebugLoggerServerInterceptor implements ServerInterceptor {
+public class LoggingInterceptor implements ServerInterceptor {
+
     @Value("${plugin.grpc.server.interceptor.debug-logger.enabled:false}")
     private boolean enabled;
 
-    public DebugLoggerServerInterceptor() {
-        log.info("DebugLoggerServerInterceptor initialized");
+    public LoggingInterceptor() {
+        log.info("LoggingInterceptor enabled: {}", enabled);
     }
 
     @Override
@@ -27,7 +28,6 @@ public class DebugLoggerServerInterceptor implements ServerInterceptor {
             log.info("Request path: {}", call.getMethodDescriptor().getFullMethodName());
             log.info("Request headers: {}}", headers);
         }
-
         return new ForwardingServerCallListener.SimpleForwardingServerCallListener<ReqT>(
                 next.startCall(new SimpleForwardingServerCall<ReqT, RespT>(call) {
 

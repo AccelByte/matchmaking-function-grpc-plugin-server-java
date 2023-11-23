@@ -1,4 +1,4 @@
-package net.accelbyte;
+package net.accelbyte.matchmaking.function.grpc.server;
 
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
@@ -8,10 +8,9 @@ import org.springframework.context.annotation.Profile;
 
 import net.accelbyte.sdk.core.AccelByteSDK;
 
-
 @Profile("test")
 @Configuration
-public class TestConfiguration {
+public class AppTestConfiguration {
 
     @Bean
     @Primary

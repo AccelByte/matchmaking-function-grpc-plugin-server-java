@@ -5,12 +5,12 @@ plugins {
 	id 'org.springframework.boot' version '2.7.4'
 }
 
-group = 'net.accelbyte'
+group = 'net.accelbyte.matchmaking.function.grpc.server'
 version = '0.0.1'
 sourceCompatibility = '11'
 project.buildDir = 'target'
 
-mainClassName = 'net.accelbyte.Application'
+mainClassName = 'net.accelbyte.matchmaking.function.grpc.server.App'
 
 repositories {
 	mavenCentral()
@@ -18,17 +18,18 @@ repositories {
 
 dependencies {
 	annotationProcessor 'org.projectlombok:lombok:1.18.24'
+	implementation 'org.projectlombok:lombok:1.18.24'
+
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.5'
+
 	implementation 'com.google.code.gson:gson:2.9.1'
 	implementation 'io.micrometer:micrometer-registry-prometheus:1.9.5'
 	implementation 'net.accelbyte.sdk:sdk:0.47.0'
 	implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
-	implementation 'org.projectlombok:lombok:1.18.24'
 	implementation 'org.springframework.boot:spring-boot-starter:2.7.5'
 	implementation 'org.springframework.boot:spring-boot-starter-web:2.7.5'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator:2.7.5'
-
-	testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.5'
 }
 
 bootJar {

@@ -1,4 +1,4 @@
-package net.accelbyte;
+package net.accelbyte.matchmaking.function.grpc.server;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,12 +10,10 @@ import net.accelbyte.sdk.core.repository.DefaultConfigRepository;
 import net.accelbyte.sdk.core.repository.DefaultTokenRepository;
 
 @Configuration
-public class ApplicationConfiguration {
+public class AppConfiguration {
     @Bean
     public AccelByteSDK accelbyteSdk() {
-        final AccelByteConfig config = new AccelByteConfig(
-                new OkhttpClient(),
-                new DefaultTokenRepository(),
+        final AccelByteConfig config = new AccelByteConfig(new OkhttpClient(), new DefaultTokenRepository(),
                 new DefaultConfigRepository());
 
         return new AccelByteSDK(config);
