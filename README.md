@@ -248,15 +248,3 @@ After passing integration test against locally running sample app you may want t
    > Note: the REPO_URL is obtained from step 2 in the app detail on the 'Repository Url' field
 
 Please refer to [getting started docs](https://docs.accelbyte.io/gaming-services/services/extend/override-ags-feature/getting-started-with-matchmaking-customization/) for more detailed steps on how to deploy sample app to AccelByte Gaming Service.
-
-## Advanced
-
-### Building Multi-Arch Docker Image
-
-To create a multi-arch docker image of the project, use the following command.
-
-```
-make imagex
-```
-
-For more details about the command, see [Makefile](Makefile).
