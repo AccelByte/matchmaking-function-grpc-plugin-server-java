@@ -16,6 +16,7 @@ import net.accelbyte.sdk.core.AccelByteSDK;
 import io.grpc.stub.MetadataUtils;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
+import net.accelbyte.sdk.core.AccessTokenPayload;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,7 +61,9 @@ class MatchFunctionServiceTest {
         @Test
         void validateTicket() {
                 Mockito.reset(sdk);
-                Mockito.when(sdk.validateToken(any(), any(), anyInt())).thenReturn(true);
+                var tokenPayload = new AccessTokenPayload();
+                tokenPayload.setExtendNamespace("test");
+                Mockito.when(sdk.parseAccessToken(any(), any())).thenReturn(tokenPayload);
 
                 final ValidateTicketResponse validateTicketResponse = MatchFunctionGrpc.newBlockingStub(channel)
                                 .withInterceptors(MetadataUtils.newAttachHeadersInterceptor(header))
@@ -72,7 +75,9 @@ class MatchFunctionServiceTest {
         @Test
         void makeMatches() throws InterruptedException {
                 Mockito.reset(sdk);
-                Mockito.when(sdk.validateToken(any(), any(), anyInt())).thenReturn(true);
+                var tokenPayload = new AccessTokenPayload();
+                tokenPayload.setExtendNamespace("test");
+                Mockito.when(sdk.parseAccessToken(any(), any())).thenReturn(tokenPayload);
 
                 final MakeMatchesRequest makeMatchesRequest1 = MakeMatchesRequest.newBuilder()
                                 .setTicket(Ticket.newBuilder().setTicketId("ad74df0e")
@@ -123,7 +128,7 @@ class MatchFunctionServiceTest {
         @Test
         void failsAuthorization() {
                 Mockito.reset(sdk);
-                Mockito.when(sdk.validateToken(any(), any(), anyInt())).thenReturn(false);
+                Mockito.when(sdk.parseAccessToken(any(), any())).thenReturn(null);
 
                 Assertions.assertThrows(StatusRuntimeException.class, () -> {
                         MatchFunctionGrpc.newBlockingStub(channel)

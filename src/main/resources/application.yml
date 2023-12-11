@@ -1,8 +1,8 @@
+app:
+  namespace: ${AB_NAMESPACE}
+
 plugin:
   grpc:
-    config:
-      namespace: ${AB_NAMESPACE:accelbyte}
-      resource_name: 'MMV2GRPCSERVICE'
     server:
       interceptor:
         debug-logger:
