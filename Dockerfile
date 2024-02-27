@@ -11,7 +11,7 @@ COPY . .
 RUN sh gradlew build -i
 
 
-FROM azul/zulu-openjdk:17.0.4-17.36.13
+FROM --platform=$BUILDPLATFORM azul/zulu-openjdk:17.0.4-17.36.13
 WORKDIR /app
 COPY jars/aws-opentelemetry-agent.jar aws-opentelemetry-agent.jar
 COPY --from=builder /build/target/*.jar app.jar
