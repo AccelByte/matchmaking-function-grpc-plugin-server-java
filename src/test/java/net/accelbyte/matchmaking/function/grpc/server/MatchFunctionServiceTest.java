@@ -4,6 +4,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Metadata;
 import io.grpc.StatusRuntimeException;
+import net.accelbyte.matchmaking.function.grpc.server.config.MockedAppConfiguration;
 import net.accelbyte.matchmakingv2.matchfunction.GetStatCodesRequest;
 import net.accelbyte.matchmakingv2.matchfunction.MakeMatchesRequest;
 import net.accelbyte.matchmakingv2.matchfunction.Match;
@@ -38,7 +39,11 @@ import static org.mockito.ArgumentMatchers.anyInt;
 
 @Slf4j
 @ActiveProfiles("test")
-@SpringBootTest(properties = "grpc.port=0")
+//@SpringBootTest(properties = "grpc.port=0")
+@SpringBootTest(
+        classes = MockedAppConfiguration.class,
+        properties = "spring.main.allow-bean-definition-overriding=true"
+)
 class MatchFunctionServiceTest {
         private ManagedChannel channel;
 
