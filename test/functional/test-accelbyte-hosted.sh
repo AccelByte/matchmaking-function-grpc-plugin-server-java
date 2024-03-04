@@ -136,4 +136,6 @@ fi
 
 echo '# Testing Extend app using demo script'
 
+sleep 60
+
 EXTEND_APP_NAME="$APP_NAME" bash demo.sh

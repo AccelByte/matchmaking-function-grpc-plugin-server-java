@@ -39,7 +39,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 
 @Slf4j
 @ActiveProfiles("test")
-//@SpringBootTest(properties = "grpc.port=0")
 @SpringBootTest(
         classes = MockedAppConfiguration.class,
         properties = "spring.main.allow-bean-definition-overriding=true"
