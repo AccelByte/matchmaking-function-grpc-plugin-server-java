@@ -147,8 +147,15 @@ public class MatchmakingFunctionService extends MatchFunctionGrpc.MatchFunctionI
             playerDataList.addAll(unmatchedTickets.get(i).getPlayersList());
         }
         final List<String> playerIds = playerDataList.stream().map(e -> e.getPlayerId()).collect(Collectors.toList());
-        final Match match = Match.newBuilder().addRegionPreferences("any").addAllTickets(unmatchedTickets)
-                .addTeams(Match.Team.newBuilder().addAllUserIds(playerIds).build()).build();
+
+        // RegionPreference value is just an example. The value(s) should be from the best region on the matchmaker.Ticket.Latencies
+        final Match match = Match.newBuilder()
+                .addRegionPreferences("us-east-2")
+                .addRegionPreferences("us-west-2")
+                .addAllTickets(unmatchedTickets)
+                .addTeams(Match.Team.newBuilder().addAllUserIds(playerIds).build())
+                .build();
+
         return match;
     }
 }
