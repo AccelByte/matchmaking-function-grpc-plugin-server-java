@@ -20,7 +20,7 @@ bash gradlew -i --no-daemon generateProto \
 bash gradlew -i --no-daemon clean build
 bash gradlew -i --no-daemon run & GRPC_SERVER_PID=$!
 
-(for _ in {1..12}; do bash -c "timeout 1 echo > /dev/tcp/127.0.0.1/8080" 2>/dev/null && exit 0 || sleep 5s; done; echo "Failed to run Extend app locally"; exit 1)
+(for _ in {1..12}; do bash -c "timeout 1 echo > /dev/tcp/127.0.0.1/8080" 2>/dev/null && exit 0 || sleep 10s; done; echo "Failed to run Extend app locally"; exit 1)
 
 echo '# Run ngrok'
 
