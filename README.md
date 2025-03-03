@@ -341,8 +341,6 @@ can use something like [ngrok](https://ngrok.com/).
    
 5. Import the [Postman collection](demo/matchmaking-function-grpc-plugin-server.postman_collection.json) into Postman to simulate the matchmaking flow. Follow the instructions in the Postman collection overview to set up the environment, using the Client ID and Client Secret from the previous step. Monitor the Extend app console log while the matchmaking flow is running. The gRPC server methods should be triggered when creating match tickets, and players should be grouped in pairs.
 
-   > :warning: Please see the Postman Collection Overview to add the environment variables including the `Client ID` and `Client Secret` created in the previous step
-
 > :warning: **Ngrok free plan has some limitations**: You may want to use paid plan if the traffic is high.
 
 ### Test Observability
