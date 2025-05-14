@@ -12,6 +12,7 @@ import org.lognet.springboot.grpc.GRpcService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -142,20 +143,31 @@ public class MatchmakingFunctionService extends MatchFunctionGrpc.MatchFunctionI
     }
 
     private Match makeMatchFromUnmatchedTickets() {
-        final List<Ticket.PlayerData> playerDataList = new ArrayList<>();
-        for (int i = 0; i < unmatchedTickets.size(); i++) {
-            playerDataList.addAll(unmatchedTickets.get(i).getPlayersList());
+      final List<Ticket.PlayerData> playerDataList = new ArrayList<>();
+
+      for (Ticket ticket : unmatchedTickets) {
+        List<Ticket.PlayerData> players = ticket.getPlayersList();
+        if (players != null && !players.isEmpty()) {
+          playerDataList.addAll(players);
         }
-        final List<String> playerIds = playerDataList.stream().map(e -> e.getPlayerId()).collect(Collectors.toList());
+      }
 
-        // RegionPreference value is just an example. The value(s) should be from the best region on the matchmaker.Ticket.Latencies
-        final Match match = Match.newBuilder()
-                .addRegionPreferences("us-east-2")
-                .addRegionPreferences("us-west-2")
-                .addAllTickets(unmatchedTickets)
-                .addTeams(Match.Team.newBuilder().addAllUserIds(playerIds).build())
-                .build();
+      final List<String> playerIds = playerDataList.stream()
+        .map(Ticket.PlayerData::getPlayerId)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
 
-        return match;
+      List<Ticket> safeCopy = unmatchedTickets.stream()
+        .filter(t -> t.getPlayersList() != null && !t.getPlayersList().isEmpty())
+        .collect(Collectors.toList());
+
+      final Match match = Match.newBuilder()
+        .addRegionPreferences("us-east-2")
+        .addRegionPreferences("us-west-2")
+        .addAllTickets(safeCopy)
+        .addTeams(Match.Team.newBuilder().addAllUserIds(playerIds).build())
+        .build();
+
+      return match;
     }
 }
