@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @GRpcService
 public class MatchmakingFunctionService extends MatchFunctionGrpc.MatchFunctionImplBase {
-    private final List<Ticket> unmatchedTickets = new ArrayList<>();
     private int shipCountMin = 2;
     private int shipCountMax = 2;
 
@@ -65,6 +64,8 @@ public class MatchmakingFunctionService extends MatchFunctionGrpc.MatchFunctionI
     @Override
     public StreamObserver<MakeMatchesRequest> makeMatches(StreamObserver<MatchResponse> responseObserver) {
         return new StreamObserver<>() {
+            List<Ticket> unmatchedTickets = new ArrayList<>();
+
             @Override
             public void onNext(MakeMatchesRequest makeMatchesRequest) {
                 log.info("Received make matches request");
@@ -90,7 +91,7 @@ public class MatchmakingFunctionService extends MatchFunctionGrpc.MatchFunctionI
                     final Ticket newTicket = makeMatchesRequest.getTicket();
                     unmatchedTickets.add(newTicket);
                     if (unmatchedTickets.size() == shipCountMax) {
-                        pushMatchResultAndClearUnmatchedTickets(responseObserver);
+                        pushMatchResultAndClearUnmatchedTickets(responseObserver, unmatchedTickets);
                     }
                     log.info("Unmatched tickets size: {}", unmatchedTickets.size());
                 }
@@ -105,7 +106,7 @@ public class MatchmakingFunctionService extends MatchFunctionGrpc.MatchFunctionI
             public void onCompleted() {
                 log.info("Complete, unmatched tickets size: {}", unmatchedTickets.size());
                 if (unmatchedTickets.size() >= shipCountMin) {
-                    pushMatchResultAndClearUnmatchedTickets(responseObserver);
+                    pushMatchResultAndClearUnmatchedTickets(responseObserver, unmatchedTickets);
                 }
                 responseObserver.onCompleted();
             }
@@ -136,38 +137,39 @@ public class MatchmakingFunctionService extends MatchFunctionGrpc.MatchFunctionI
         };
     }
 
-    private void pushMatchResultAndClearUnmatchedTickets(StreamObserver<MatchResponse> responseObserver) {
-        final Match match = makeMatchFromUnmatchedTickets();
+    private void pushMatchResultAndClearUnmatchedTickets(StreamObserver<MatchResponse> responseObserver,
+            List<Ticket> unmatchedTickets) {
+        final Match match = makeMatchFromUnmatchedTickets(unmatchedTickets);
         responseObserver.onNext(MatchResponse.newBuilder().setMatch(match).build());
         unmatchedTickets.clear();
     }
 
-    private Match makeMatchFromUnmatchedTickets() {
-      final List<Ticket.PlayerData> playerDataList = new ArrayList<>();
+    private Match makeMatchFromUnmatchedTickets(List<Ticket> unmatchedTickets) {
+        final List<Ticket.PlayerData> playerDataList = new ArrayList<>();
 
-      for (Ticket ticket : unmatchedTickets) {
-        List<Ticket.PlayerData> players = ticket.getPlayersList();
-        if (players != null && !players.isEmpty()) {
-          playerDataList.addAll(players);
+        for (Ticket ticket : unmatchedTickets) {
+            List<Ticket.PlayerData> players = ticket.getPlayersList();
+            if (players != null && !players.isEmpty()) {
+                playerDataList.addAll(players);
+            }
         }
-      }
 
-      final List<String> playerIds = playerDataList.stream()
-        .map(Ticket.PlayerData::getPlayerId)
-        .filter(Objects::nonNull)
-        .collect(Collectors.toList());
+        final List<String> playerIds = playerDataList.stream()
+                .map(Ticket.PlayerData::getPlayerId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
-      List<Ticket> safeCopy = unmatchedTickets.stream()
-        .filter(t -> t.getPlayersList() != null && !t.getPlayersList().isEmpty())
-        .collect(Collectors.toList());
+        List<Ticket> safeCopy = unmatchedTickets.stream()
+                .filter(t -> t.getPlayersList() != null && !t.getPlayersList().isEmpty())
+                .collect(Collectors.toList());
 
-      final Match match = Match.newBuilder()
-        .addRegionPreferences("us-east-2")
-        .addRegionPreferences("us-west-2")
-        .addAllTickets(safeCopy)
-        .addTeams(Match.Team.newBuilder().addAllUserIds(playerIds).build())
-        .build();
+        final Match match = Match.newBuilder()
+                .addRegionPreferences("us-east-2")
+                .addRegionPreferences("us-west-2")
+                .addAllTickets(safeCopy)
+                .addTeams(Match.Team.newBuilder().addAllUserIds(playerIds).build())
+                .build();
 
-      return match;
+        return match;
     }
 }
