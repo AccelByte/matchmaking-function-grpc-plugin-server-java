@@ -5,7 +5,7 @@
 SHELL := /bin/bash
 
 PROJECT_NAME := $(shell basename "$$(pwd)")
-GRADLE_IMAGE := gradle:7.6.4-jdk17
+GRADLE_IMAGE := gradle:8.5-jdk21
 BUILD_CACHE_VOLUME := $(shell echo '$(PROJECT_NAME)' | sed 's/[^a-zA-Z0-9_-]//g')-build-cache
 
 .PHONY: build
