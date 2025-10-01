@@ -48,19 +48,7 @@ public class BackfillMatchesIntegrationTest {
         }).when(backfillResponseObserver).onNext(any(BackfillResponse.class));
 
         // Create game rules with backfill enabled
-        String gameRulesJson = """
-            {
-                "shipCountMin": 2,
-                "shipCountMax": 6,
-                "auto_backfill": true,
-                "alliance": {
-                    "min_number": 1,
-                    "max_number": 3,
-                    "player_min_number": 2,
-                    "player_max_number": 2
-                }
-            }
-            """;
+        String gameRulesJson = "{\"shipCountMin\":2,\"shipCountMax\":6,\"auto_backfill\":true,\"alliance\":{\"min_number\":1,\"max_number\":3,\"player_min_number\":2,\"player_max_number\":2}}";
 
         // Create backfill tickets (representing existing matches that need more players)
         BackfillTicket backfillTicket1 = createBackfillTicket("backfill-1", "session-1", 

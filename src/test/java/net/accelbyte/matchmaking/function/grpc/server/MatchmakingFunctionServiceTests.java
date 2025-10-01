@@ -44,19 +44,7 @@ public class MatchmakingFunctionServiceTests {
         }).when(backfillResponseObserver).onNext(any(BackfillResponse.class));
 
         // Create test data
-        String gameRulesJson = """
-            {
-                "shipCountMin": 2,
-                "shipCountMax": 4,
-                "auto_backfill": true,
-                "alliance": {
-                    "min_number": 1,
-                    "max_number": 2,
-                    "player_min_number": 2,
-                    "player_max_number": 2
-                }
-            }
-            """;
+        String gameRulesJson = "{\"shipCountMin\":2,\"shipCountMax\":4,\"auto_backfill\":true,\"alliance\":{\"min_number\":1,\"max_number\":2,\"player_min_number\":2,\"player_max_number\":2}}";
 
         // Create a backfill ticket
         BackfillTicket.PartialMatch partialMatch = BackfillTicket.PartialMatch.newBuilder()
@@ -164,19 +152,7 @@ public class MatchmakingFunctionServiceTests {
         }).when(backfillResponseObserver).onNext(any(BackfillResponse.class));
 
         // Create test data
-        String gameRulesJson = """
-            {
-                "shipCountMin": 2,
-                "shipCountMax": 4,
-                "auto_backfill": true,
-                "alliance": {
-                    "min_number": 1,
-                    "max_number": 2,
-                    "player_min_number": 2,
-                    "player_max_number": 2
-                }
-            }
-            """;
+        String gameRulesJson = "{\"shipCountMin\":2,\"shipCountMax\":4,\"auto_backfill\":true,\"alliance\":{\"min_number\":1,\"max_number\":2,\"player_min_number\":2,\"player_max_number\":2}}";
 
         // Create regular tickets
         Ticket ticket1 = createTestTicket("ticket-1", "player1", "player2");
