@@ -3,7 +3,7 @@
   "packageRules": [
     {
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["eclipse-temurin"],
+      "matchPackageNames": ["**/amazoncorretto*", "**/amazoncoretto*"],
       "matchUpdateTypes": ["major"],
       "enabled": false
     },
