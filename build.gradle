@@ -29,7 +29,7 @@ dependencies {
 	implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 	implementation 'org.springframework.boot:spring-boot-starter:3.3.13'
 	implementation 'org.springframework.boot:spring-boot-starter-web:3.3.13'
-	implementation 'org.springframework.boot:spring-boot-starter-actuator:3.3.13'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator:3.4.0'
 	implementation 'com.google.protobuf:protobuf-java-util:3.19.2'
 }
 
